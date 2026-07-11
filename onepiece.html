@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Untap — průvodce pro začátek s One Piece Card Game</title>
+<meta name="description" content="Struktura tahu, jak číst kartu, šest barev, souboj, život v kartách, DON!!, pravidla a vyhledávatelný slovník. One Piece Card Game česky, na jednom místě.">
+<meta name="theme-color" content="#f5f5f7">
+<link rel="canonical" href="https://mtg-untap.vercel.app/onepiece.html">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://mtg-untap.vercel.app/onepiece.html">
+<meta property="og:title" content="Untap — průvodce pro začátek s One Piece Card Game">
+<meta property="og:description" content="Struktura tahu, jak číst kartu, šest barev, souboj, život v kartách, DON!! a vyhledávatelný slovník. Česky, na jednom místě.">
+<meta property="og:image" content="https://mtg-untap.vercel.app/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="cs_CZ">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  :root{--accent:#c0501e;--accent-ink:#9c3d12;--accent-soft:#f8e9df;--accent-tint:#fdf5ef}
+  /* One Piece card anatomy — used only on this page */
+  .opcard{flex:0 0 244px;max-width:100%;background:#b63a2f;padding:9px;border-radius:14px;box-shadow:var(--shadow)}
+  .op-inner{background:#f7f2ea;border-radius:var(--r-sm);padding:8px;position:relative;color:#23272f}
+  .op-badge{position:absolute;width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-weight:800;font-size:var(--t-xs);display:flex;align-items:center;justify-content:center;z-index:2;box-shadow:0 2px 6px rgba(0,0,0,.25)}
+  .op-top{position:relative;display:flex;align-items:center;gap:6px}
+  .op-cost{width:26px;height:26px;border-radius:50%;background:#2b2f3a;color:#fff;font-weight:800;font-size:var(--t-sm);display:flex;align-items:center;justify-content:center}
+  .op-attr{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:#fff;background:#7a6a55;border-radius:var(--r-pill);padding:2px 7px}
+  .op-color{margin-left:auto;font-size:9px;font-weight:800;text-transform:uppercase;color:#b63a2f}
+  .op-name{position:relative;font-weight:800;font-size:var(--t-md);margin-top:6px}
+  .op-art{position:relative;height:92px;margin-top:5px;background:linear-gradient(135deg,#e7c39a,#d98f6e 55%,#b6889f);border-radius:6px;display:flex;align-items:flex-end;justify-content:center;color:#4a3f38;font-size:var(--t-2xs);padding-bottom:5px}
+  .op-type{position:relative;font-size:9px;font-weight:700;color:#8a7f6a;margin-top:6px;text-transform:uppercase;letter-spacing:.03em}
+  .op-eff{position:relative;font-size:var(--t-2xs);line-height:1.5;margin-top:5px;padding-top:5px;border-top:1px solid #e6ddcd}
+  .op-eff b{color:#b63a2f}
+  .op-bottom{position:relative;display:flex;justify-content:space-between;align-items:flex-end;margin-top:6px}
+  .op-counter{font-size:var(--t-xs);font-weight:800;color:#b63a2f}
+  .op-power{font-weight:800;font-size:var(--t-lg)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <a class="logo" href="index.html">Untap</a>
+  </div>
+
+  <div class="hero">
+    <div class="kicker">Průvodce pro úplný začátek</div>
+    <h1>Nauč se hrát <em>One Piece</em></h1>
+    <p>Struktura tahu, jak číst kartu, šest barev, souboj, život v kartách, DON!!, pravidla a vyhledávatelný slovník. Vše na jednom místě.</p>
+    <div class="pips" aria-hidden="true"><span class="pip op-r"></span><span class="pip op-g"></span><span class="pip op-b"></span><span class="pip op-p"></span><span class="pip op-k"></span><span class="pip op-y"></span></div>
+  </div>
+
+  <!-- TURN -->
+  <section class="block" id="tah">
+    <div class="eyebrow">Kostra hry</div>
+    <h2>Struktura tahu</h2>
+    <p class="lead">Pět fází pořád ve stejném pořadí. Skoro vše se odehraje v Main fázi — zbytek je automatika.</p>
+    <div class="panel">
+      <div class="flow">
+        <div class="step"><div class="n">01</div><div class="t">Refresh</div><div class="d">Narovnáš (aktivuješ) všechny své karty.</div></div>
+        <div class="step"><div class="n">02</div><div class="t">Draw</div><div class="d">Lízneš 1 kartu. První tah: hráč první nelíže.</div></div>
+        <div class="step"><div class="n">03</div><div class="t">DON!!</div><div class="d">Přidáš 2 DON!! (první tah jen 1), max 10.</div></div>
+        <div class="step"><div class="n">04</div><div class="t">Main</div><div class="d">Hraj karty, útoč, aktivuj — v libovolném pořadí.</div></div>
+        <div class="step"><div class="n">05</div><div class="t">End</div><div class="d">Doběhnou efekty „do konce tahu".</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CARD ANATOMY -->
+  <section class="block" id="karta">
+    <div class="eyebrow">Slovník na jedné kartě</div>
+    <h2>Jak číst kartu</h2>
+    <p class="lead">Karta ti řekne skoro vše. Tady je schéma charakteru s částmi, které tě zajímají.</p>
+    <div class="anat">
+      <div class="opcard" aria-label="Schéma karty">
+        <div class="op-inner">
+          <div class="op-top"><span class="op-cost">3</span><span class="op-badge" style="top:-11px;left:-11px">1</span><span class="op-attr">Slash</span><span class="op-badge" style="position:static;display:inline-flex">5</span><span class="op-color">Red</span><span class="op-badge" style="position:static;display:inline-flex">4</span></div>
+          <div class="op-name">Roronoa Zoro<span class="op-badge" style="top:-6px;right:-11px">2</span></div>
+          <div class="op-art">ilustrace</div>
+          <div class="op-type">Supernovas / Straw Hat Crew<span class="op-badge" style="top:-8px;right:-11px">6</span></div>
+          <div class="op-eff"><span class="op-badge" style="top:-8px;left:-11px">7</span><b>[Rush]</b> Tato karta smí útočit v tahu, kdy přišla do hry.</div>
+          <div class="op-bottom"><span class="op-counter">+1000<span class="op-badge" style="top:-11px;left:-6px">8</span></span><span class="op-power">5000<span class="op-badge" style="top:-11px;right:-6px">3</span></span></div>
+        </div>
+      </div>
+      <div class="legend">
+        <ol>
+          <li><b>Cost</b> <span class="czl">— cena v DON!!, kolik zaplatíš za zahrání.</span></li>
+          <li><b>Name</b> <span class="czl">— jméno karty. Limit 4 kopií se stejným číslem.</span></li>
+          <li><b>Power</b> <span class="czl">— bojová síla. Porovnává se v souboji.</span></li>
+          <li><b>Color</b> <span class="czl">— barva. Musí sedět s barvou tvého leadera.</span></li>
+          <li><b>Attribute</b> <span class="czl">— typ útoku (Slash, Strike, Ranged…).</span></li>
+          <li><b>Type</b> <span class="czl">— frakce a příslušnost (Straw Hat Crew…).</span></li>
+          <li><b>Effect</b> <span class="czl">— schopnosti a klíčová slova. To důležité.</span></li>
+          <li><b>Counter</b> <span class="czl">— kolik power přidá z ruky v obraně.</span></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- COLORS -->
+  <section class="block" id="barvy">
+    <div class="eyebrow">Šest barev · a leader</div>
+    <h2>Barvy a leader</h2>
+    <p class="lead">Základ balíčku je <b>leader</b>: začíná ve hře, útočí každý tah, dává ti život a určuje, které barvy smíš hrát. Každá barva má svůj styl.</p>
+    <div class="colors">
+      <div class="clr" style="--ca:#d63a3a"><span class="dot"></span><div><div class="cn">Red <span>Červená · agrese</span></div><div class="cd">Vysoká <b>power</b> a tlak. Chce útočit brzy a rychle sundat život.</div></div></div>
+      <div class="clr" style="--ca:#3fa06a"><span class="dot"></span><div><div class="cn">Green <span>Zelená · rest a tempo</span></div><div class="cd">Otáčí (restuje) soupeřovy karty a pracuje s aktivací. Zamyká desku.</div></div></div>
+      <div class="clr" style="--ca:#4f8fd6"><span class="dot"></span><div><div class="cn">Blue <span>Modrá · kontrola</span></div><div class="cd"><b>Vrací karty</b> do ruky a balíčku, manipuluje s cenami. Zdržuje.</div></div></div>
+      <div class="clr" style="--ca:#9563c0"><span class="dot"></span><div><div class="cn">Purple <span>Fialová · DON!!</span></div><div class="cd">Utrácí a vrací <b>DON!!</b> za sílu a velké karty dřív. Rampová barva.</div></div></div>
+      <div class="clr" style="--ca:#4a4652"><span class="dot"></span><div><div class="cn">Black <span>Černá · odstranění</span></div><div class="cd"><b>Snižuje cenu a power</b> soupeřových karet a odstraňuje. Defenzivní.</div></div></div>
+      <div class="clr" style="--ca:#e5c94a"><span class="dot"></span><div><div class="cn">Yellow <span>Žlutá · život</span></div><div class="cd">Pracuje s <b>životem a triggery</b>. Silná, když je zády ke zdi.</div></div></div>
+    </div>
+    <div class="callout"><b>Tip:</b> začni s <b>jednobarevným leaderem</b>. Dvoubarevní dávají víc možností, ale i víc rozhodování, kdy co hrát.</div>
+  </section>
+
+  <!-- COMBAT -->
+  <section class="block" id="souboj">
+    <div class="eyebrow">Krok za krokem</div>
+    <h2>Jak proběhne souboj</h2>
+    <p class="lead">Útočí leader nebo charakter. Cílem smí být jen soupeřův <b>leader</b> nebo jeho <b>otočený (rested)</b> charakter — na aktivní charaktery nejde útočit.</p>
+    <div class="steps3">
+      <div class="s3"><div class="num">1</div><div class="st">Prohlásíš útok <span>attacker rests</span></div><div class="sd">Otočíš útočníka (rest) a zvolíš cíl. Charakter smí útočit, jen když je aktivní a <b>nepřišel tento tah</b> (obchází to <b>Rush</b>).</div></div>
+      <div class="s3"><div class="num">2</div><div class="st">Blocker a counter <span>obrana</span></div><div class="sd">Soupeř smí otočit <b>Blockera</b> a stáhnout útok na něj. Pak v <b>counter kroku</b> hraje z ruky <b>counter karty</b>, aby zvedl power obránce.</div></div>
+      <div class="s3"><div class="num">3</div><div class="st">Porovnáš power <span>a vyhodnotíš</span></div><div class="sd">Je-li <b>power útočníka ≥ power obránce</b>, útok prošel. Charakter je <b>KO</b>. Leader místo toho <b>ztratí život</b>.</div></div>
+    </div>
+    <div class="callout"><b>Remíza patří útočníkovi:</b> stejná power stačí. Proto obránce v counter kroku hází karty z ruky, aby se dostal <b>aspoň o 1 nad</b> útočníka.</div>
+  </section>
+
+  <!-- LIFE / WIN -->
+  <section class="block" id="zivot">
+    <div class="eyebrow">Jak se vyhrává</div>
+    <h2>Život v kartách</h2>
+    <p class="lead">Leader má <b>Life</b> — tolik karet si na začátku dáš lícem dolů stranou. Zásah leadera bere <b>vrchní kartu života do ruky</b>. Prohráváš, až když už není co brát.</p>
+    <div class="lifo">
+      <div class="lv top"><div><div class="lt">Zásah leadera → karta do ruky</div><div class="ln">vrchní život jde do ruky; má-li [Trigger], smíš ho spustit</div></div><div class="ord">běžné zranění</div></div>
+      <div class="lv"><div><div class="lt">Double Attack sebere dva</div><div class="ln">některé karty vezmou rovnou dvě karty života</div></div><div class="ord">tvrdší</div></div>
+      <div class="lv"><div><div class="lt">Zásah na nulový život = prohra</div><div class="ln">nebo když si soupeř nemůže líznout (deck out)</div></div><div class="ord">konec hry</div></div>
+    </div>
+    <div class="callout"><b>Pozor na obojsečnost:</b> život ti dává karty do ruky, takže soupeř na nízkém životě má víc paliva na counter. Poslední rány bývají nejtěžší — plánuj <b>lethal</b> dopředu.</div>
+  </section>
+
+  <!-- RULES -->
+  <section class="block" id="pravidla">
+    <div class="eyebrow">Co se nejvíc plete</div>
+    <h2>Pravidla, na která pozor</h2>
+    <div class="rules">
+      <div class="rule"><div class="rt">DON!! roste sám</div><div class="rd">Každý tah přidáš <b>2 DON!!</b> (první hráč v prvním tahu jen 1), <b>strop je 10</b>. Žádné barvy, žádný mana screw.</div></div>
+      <div class="rule"><div class="rt">DON!! se dá připnout</div><div class="rd">Aktivní DON!! můžeš <b>dát na leadera nebo charakter</b> a získat <b>+1000 power</b> do konce tahu. Hlavní způsob, jak protlačit útok.</div></div>
+      <div class="rule"><div class="rt">První hráč je omezený</div><div class="rd">Kdo jde první, <b>nelíže</b> v prvním tahu, bere <b>jen 1 DON!!</b> a <b>nesmí útočit</b>. Vyrovnává výhodu tahu.</div></div>
+      <div class="rule"><div class="rt">Nový charakter nezaútočí</div><div class="rd">Charakter zahraný tento tah <b>nemůže útočit</b> — je jako s přivolávací nemocí. Výjimka je <b>Rush</b>.</div></div>
+      <div class="rule"><div class="rt">Útočit jde jen na rested a leadera</div><div class="rd">Soupeřovy <b>aktivní charaktery</b> jsou nedotknutelné. Cílíš na jeho <b>leadera</b> nebo <b>otočené</b> charaktery.</div></div>
+      <div class="rule"><div class="rt">Rest = použité</div><div class="rd">Otočená (rested) karta je „spotřebovaná". Narovná se až v tvé <b>Refresh fázi</b> příští tah.</div></div>
+      <div class="rule"><div class="rt">Pět charakterů na desce</div><div class="rd">V <b>Character area</b> smíš mít <b>nejvýš 5 charakterů</b>. Šestého jde zahrát jen, když jiného odloučíš.</div></div>
+      <div class="rule"><div class="rt">Stavba balíčku</div><div class="rd"><b>1 leader + 50 karet</b>, max <b>4 kopie</b> stejného čísla, jen <b>barvy leadera</b>, plus <b>10 DON!!</b> stranou.</div></div>
+    </div>
+  </section>
+
+  <!-- MISTAKES -->
+  <section class="block" id="chyby">
+    <div class="eyebrow">Vyhni se jim</div>
+    <h2>Typické chyby začátečníka</h2>
+    <div class="miss">
+      <div class="m"><div class="bad"><span class="tag x">✕</span><span>Vyházíš celou ruku na desku a nemáš čím counterovat.</span></div><div class="fix"><span class="tag c">✓</span><span>Karty v ruce jsou <b>obrana</b>. Nech si counter hodnoty na soupeřův útok, ať tě neobejde levně.</span></div></div>
+      <div class="m"><div class="bad"><span class="tag x">✕</span><span>Připínáš DON!! na charaktery pořád dopředu.</span></div><div class="fix"><span class="tag c">✓</span><span>DON!! na útok je fajn, ale <b>zaplacení karet z ruky</b> často udělá víc. Zvaž, jestli radši nerozvineš desku.</span></div></div>
+      <div class="m"><div class="bad"><span class="tag x">✕</span><span>Útočíš leaderem soupeře brzo a krmíš ho kartami.</span></div><div class="fix"><span class="tag c">✓</span><span>Každý zásah leadera mu dá <b>kartu do ruky</b>. Nespěchej — bij do života, až umíš dojet.</span></div></div>
+      <div class="m"><div class="bad"><span class="tag x">✕</span><span>Necháváš charaktery aktivní a jen se bráníš.</span></div><div class="fix"><span class="tag c">✓</span><span>Aktivní charaktery <b>nejdou napadnout</b>, ale ani netlačí. Otoč je do útoku a diktuj tempo.</span></div></div>
+      <div class="m"><div class="bad"><span class="tag x">✕</span><span>Zahraješ charakter a čekáš, že hned zaútočí.</span></div><div class="fix"><span class="tag c">✓</span><span>Bez <b>Rush</b> zaútočí až příští tah. Počítej s tím při plánování lethalu.</span></div></div>
+      <div class="m"><div class="bad"><span class="tag x">✕</span><span>Jdeš první a chceš rovnou útočit.</span></div><div class="fix"><span class="tag c">✓</span><span>První hráč <b>v prvním tahu neútočí</b> a bere jen 1 DON!!. Využij tah na rozehrání desky.</span></div></div>
+    </div>
+  </section>
+
+  <!-- FROM MAGIC -->
+  <section class="block" id="mtg">
+    <div class="eyebrow">Z jedné hry do druhé</div>
+    <h2>Z Magicu do One Piece</h2>
+    <p class="lead">Přicházíš z Magicu? Řadu pojmů máš v hlavě, jen se jinak jmenují — a pár věcí funguje vyloženě jinak.</p>
+    <div class="maps">
+      <div class="map"><span class="hs">Land / mana</span><span class="arrow">→</span><span class="mtg">DON!!<small>univerzální, roste sám</small></span></div>
+      <div class="map"><span class="hs">Creature</span><span class="arrow">→</span><span class="mtg">Character</span></div>
+      <div class="map"><span class="hs">Commander</span><span class="arrow">→</span><span class="mtg">Leader<small>a dává i život</small></span></div>
+      <div class="map"><span class="hs">Instant / reakce</span><span class="arrow">→</span><span class="mtg">Counter karta<small>jen v counter kroku</small></span></div>
+      <div class="map"><span class="hs">Power / Toughness</span><span class="arrow">→</span><span class="mtg">Power<small>jen jedno číslo</small></span></div>
+      <div class="map"><span class="hs">Life total</span><span class="arrow">→</span><span class="mtg">Life<small>karty, jdou ti do ruky</small></span></div>
+      <div class="map"><span class="hs">Tap / Untap</span><span class="arrow">→</span><span class="mtg">Rest / Active</span></div>
+      <div class="map"><span class="hs">Graveyard</span><span class="arrow">→</span><span class="mtg">Trash</span></div>
+    </div>
+    <div class="eyebrow" style="margin-top:20px">Tři velké rozdíly</div>
+    <div class="diffs">
+      <div class="diff"><div class="dt">1 · Zdroj je univerzální a roste sám</div><div class="dd">Žádné barvy many, žádný mana screw. Každý tah <b>+2 DON!!</b> až do desíti. A DON!! navíc <b>připínáš pro +1000 power</b> — je to zdroj i bojový trik zároveň.</div></div>
+      <div class="diff"><div class="dt">2 · Život máš v kartách a chodí ti do ruky</div><div class="dd">Nesrážíš jeden life total. Každý zásah leadera <b>dá kartu do ruky</b> (s triggerem). Prohráváš, až když už není co brát — a nízký život tě paradoxně <b>zásobí counterem</b>.</div></div>
+      <div class="diff"><div class="dt">3 · Bráníš se rukou v counter kroku</div><div class="dd">Místo instantů kdykoli <b>odhazuješ counter karty</b> jen v obraně, abys dorovnal power. Souboj je o číslech a o tom, kdo si nechá víc karet v ruce.</div></div>
+    </div>
+  </section>
+
+  <!-- FORMATS -->
+  <section class="block" id="formaty">
+    <div class="eyebrow">Kde se vlastně hraje</div>
+    <h2>Formáty</h2>
+    <p class="lead">Pravidla jsou všude stejná. Liší se hlavně to, jak vážně a s kým hraješ.</p>
+    <div class="rules">
+      <div class="rule"><div class="rt">Standard <span class="cz">(turnaje)</span></div><div class="rd">Hlavní soutěžní formát. <b>1 leader + 50 karet</b>, všechny vydané sety povolené. Sem míří většina hráčů i turnajů.</div></div>
+      <div class="rule"><div class="rt">Starter deck</div><div class="rd">Hotový balíček z krabice, hratelný rovnou. <b>Nejlepší vstupní bod</b> — koupíš dva a hraješ s kamarádem hned.</div></div>
+      <div class="rule"><div class="rt">Casual / kitchen table</div><div class="rd">Hraní s kamarády bez turnajových tlaků. Ideální na osahání barev a leaderů, než postavíš vlastní balíček.</div></div>
+      <div class="rule"><div class="rt">Simulátory</div><div class="rd">Online skrz komunitní klienty. Dobré na trénink matchupů a testování balíčků <b>zdarma</b>, než investuješ do karet.</div></div>
+    </div>
+  </section>
+
+  <!-- FIRST DECK -->
+  <section class="block" id="balicek">
+    <div class="eyebrow">Praktické</div>
+    <h2>Tvůj první balíček</h2>
+    <p class="lead">Nestav ho od nuly. Vyber si leadera, kup starter a měň po jedné kartě, ať vidíš, co která dělá.</p>
+    <div class="steps3">
+      <div class="s3"><div class="num">1</div><div class="st">Vyber leadera <span>jádro balíčku</span></div><div class="sd">Leader určuje barvy i styl. Jednobarevný a agresivní (třeba červený) je na naučení nejpřímočařejší.</div></div>
+      <div class="s3"><div class="num">2</div><div class="st">Kup starter <span>hotový balíček</span></div><div class="sd">Startery jsou vyladěné a hratelné rovnou. Poskládané tak, aby křivka cen i counter hodnoty seděly.</div></div>
+      <div class="s3"><div class="num">3</div><div class="st">Hlídej křivku a countery <span>konzistence</span></div><div class="sd">Měj dost levných charakterů na první tahy a dost karet s <b>vysokým counterem</b>, ať se máš čím bránit.</div></div>
+    </div>
+    <div class="maps">
+      <div class="map"><span class="hs">Balíček</span><span class="arrow">→</span><span class="mtg">1 leader + 50 karet<small>max 4 kopie čísla</small></span></div>
+      <div class="map"><span class="hs">DON!! deck</span><span class="arrow">→</span><span class="mtg">10 DON!! stranou<small>pro všechny stejné</small></span></div>
+    </div>
+    <div class="callout"><b>Pravidlo palce:</b> počítej karty podle <b>counter hodnoty</b>, ne jen podle power. Balíček bez counterů vypadá silně, ale prohrává souboje, které měl vyhrát.</div>
+  </section>
+
+  <!-- GLOSSARY -->
+  <section class="block" id="slovnik">
+    <div class="eyebrow">Vyhledávatelný</div>
+    <h2>Slovník pojmů</h2>
+    <p class="lead">Anglický termín, český význam, příklad. Napiš do hledání a hned to najde.</p>
+    <div class="search">
+      <span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></span>
+      <input id="q" type="text" placeholder="Hledej: don, counter, blocker, rest, život…" autocomplete="off" aria-label="Hledat pojem">
+    </div>
+    <div class="chips" id="chips"><button class="chip active" data-cat="all" aria-pressed="true">Vše</button><button class="chip" data-cat="souboj" aria-pressed="false">Souboj</button><button class="chip" data-cat="karty" aria-pressed="false">Typy karet</button><button class="chip" data-cat="klic" aria-pressed="false">Klíčová slova</button><button class="chip" data-cat="zdroje" aria-pressed="false">DON!! a zdroje</button><button class="chip" data-cat="zony" aria-pressed="false">Zóny</button><button class="chip" data-cat="pravidla" aria-pressed="false">Pravidla hry</button><button class="chip" data-cat="slang" aria-pressed="false">Slang u stolu</button></div>
+    <div id="content">
+
+      <div class="gsec" data-cat="souboj"><div class="gsec-head"><h3>Souboj</h3><span class="count" aria-label="7 pojmů">7</span></div><div class="grid">
+        <div class="card" data-s="attack útok otočíš útočníka a zvolíš cíl: soupeřova leadera nebo jeho otočený charakter. na aktivní charaktery nejde."><div class="top"><span class="term" lang="en">Attack</span><span class="cz">Útok</span></div><div class="def">Otočíš útočníka a zvolíš cíl: leadera nebo rested charakter soupeře.</div><div class="ex">Na aktivní charaktery útočit nejde.</div></div>
+        <div class="card" data-s="power síla jediné bojové číslo karty. útok projde, když je power útočníka rovná nebo vyšší než obránce. remíza patří útočníkovi."><div class="top"><span class="term" lang="en">Power</span><span class="cz">Síla</span></div><div class="def">Jediné bojové číslo. Útok projde při power ≥ power obránce.</div><div class="ex">Remíza patří útočníkovi.</div></div>
+        <div class="card" data-s="rest / rested otočení otočená karta na bok, „spotřebovaná". útok tě resetne. narovná se v refresh fázi."><div class="top"><span class="term" lang="en">Rest / Rested</span><span class="cz">Otočení</span></div><div class="def">Karta otočená na bok, „spotřebovaná". Útok útočníka otočí.</div><div class="ex">Narovná se až v Refresh fázi.</div></div>
+        <div class="card" data-s="active aktivní narovnaná karta, připravená jednat. aktivní charaktery nejdou napadnout. jen aktivní charakter smí útočit."><div class="top"><span class="term" lang="en">Active</span><span class="cz">Aktivní</span></div><div class="def">Narovnaná karta připravená jednat. Aktivní charaktery nejdou napadnout.</div><div class="ex">Jen aktivní charakter smí zaútočit.</div></div>
+        <div class="card" data-s="counter step counter krok chvíle po prohlášení útoku, kdy obránce hraje z ruky counter karty a zvedá power obránce. tady se souboje vyhrávají."><div class="top"><span class="term" lang="en">Counter step</span><span class="cz">Counter krok</span></div><div class="def">Chvíle po útoku, kdy obránce hraje z ruky counter karty a zvedá si power.</div><div class="ex">Tady se souboje reálně vyhrávají.</div></div>
+        <div class="card" data-s="ko vyřazení charakter s nižší power padne do trashe. leader místo ko ztrácí život."><div class="top"><span class="term" lang="en">KO</span><span class="cz">Vyřazení</span></div><div class="def">Charakter, který souboj prohraje, jde do trashe.</div><div class="ex">Leader místo KO ztrácí kartu života.</div></div>
+        <div class="card" data-s="lethal dojezd stav, kdy dokážeš v jednom tahu sundat soupeři zbytek života. plánuješ, kolik útoků projde přes countery."><div class="top"><span class="term" lang="en">Lethal</span><span class="cz">Dojezd</span></div><div class="def">Když v jednom tahu sundáš soupeři zbytek života.</div><div class="ex">Počítej útoky, co projdou přes countery.</div></div>
+      </div></div>
+
+      <div class="gsec" data-cat="karty"><div class="gsec-head"><h3>Typy karet</h3><span class="count" aria-label="4 pojmy">4</span></div><div class="grid">
+        <div class="card" data-s="leader vůdce začíná ve hře, útočí každý tah, dává ti život a určuje barvy balíčku. srdce každého balíčku."><div class="top"><span class="term" lang="en">Leader</span><span class="cz">Vůdce</span></div><div class="def">Začíná ve hře, útočí každý tah, dává život a určuje barvy balíčku.</div><div class="ex">Srdce celého balíčku.</div></div>
+        <div class="card" data-s="character charakter tvoji bojovníci na desce. mají cost, power a counter. útočí a brání. bez rush útočí až příští tah."><div class="top"><span class="term" lang="en">Character</span><span class="cz">Charakter</span></div><div class="def">Tvoji bojovníci na desce — mají cost, power a counter hodnotu.</div><div class="ex">Bez Rush útočí až příští tah.</div></div>
+        <div class="card" data-s="event událost jednorázová karta s okamžitým efektem. některé mají counter a hrají se v obraně. blízko instantu/čarování."><div class="top"><span class="term" lang="en">Event</span><span class="cz">Událost</span></div><div class="def">Jednorázová karta s okamžitým efektem.</div><div class="ex">Některé mají [Counter] a hrají se v obraně.</div></div>
+        <div class="card" data-s="stage prostředí trvalá podpůrná karta, co zůstává ve hře a dává průběžný efekt. blízko trvalému kouzlu."><div class="top"><span class="term" lang="en">Stage</span><span class="cz">Prostředí</span></div><div class="def">Trvalá podpůrná karta, co zůstává ve hře a dává průběžný efekt.</div><div class="ex">Blízko trvalému kouzlu v Magicu.</div></div>
+      </div></div>
+
+      <div class="gsec" data-cat="klic"><div class="gsec-head"><h3>Klíčová slova</h3><span class="count" aria-label="8 pojmů">8</span></div><div class="grid">
+        <div class="card" data-s="blocker blocker v obraně otočíš tuto kartu a stáhneš soupeřův útok na ni. živá zeď, co chrání leadera i jiné charaktery."><div class="top"><span class="term" lang="en">[Blocker]</span><span class="cz">Blocker</span></div><div class="def">V obraně ho otočíš a stáhneš soupeřův útok na sebe.</div><div class="ex">Živá zeď, co chrání leadera.</div></div>
+        <div class="card" data-s="rush rush charakter smí útočit v tahu, kdy přišel do hry. obchází „přivolávací nemoc". agresivní karty tím tlačí hned."><div class="top"><span class="term" lang="en">[Rush]</span><span class="cz">Rush</span></div><div class="def">Charakter smí útočit v tahu, kdy přišel do hry.</div><div class="ex">Obchází to, že nový charakter obvykle nezaútočí.</div></div>
+        <div class="card" data-s="double attack dvojitý útok zásah leadera sebere rovnou dvě karty života místo jedné. výrazně urychluje dojezd."><div class="top"><span class="term" lang="en">[Double Attack]</span><span class="cz">Dvojitý útok</span></div><div class="def">Zásah leadera sebere dvě karty života místo jedné.</div><div class="ex">Výrazně urychluje dojezd.</div></div>
+        <div class="card" data-s="banish banish život sebraný tímto útokem jde rovnou do trashe, ne do ruky. soupeř z něj nedostane kartu ani trigger."><div class="top"><span class="term" lang="en">[Banish]</span><span class="cz">Banish</span></div><div class="def">Život sebraný tímto útokem jde do trashe, ne do ruky.</div><div class="ex">Soupeř z něj nezíská kartu ani trigger.</div></div>
+        <div class="card" data-s="on play při zahrání efekt se spustí ve chvíli, kdy kartu zahraješ z ruky. jednorázový vstupní bonus."><div class="top"><span class="term" lang="en">[On Play]</span><span class="cz">Při zahrání</span></div><div class="def">Efekt se spustí ve chvíli, kdy kartu zahraješ z ruky.</div><div class="ex">Vstupní bonus, obdoba ETB.</div></div>
+        <div class="card" data-s="when attacking při útoku efekt se spustí pokaždé, když karta zaútočí. odměna za agresi."><div class="top"><span class="term" lang="en">[When Attacking]</span><span class="cz">Při útoku</span></div><div class="def">Efekt se spustí pokaždé, když karta zaútočí.</div><div class="ex">Odměna za to, že tlačíš.</div></div>
+        <div class="card" data-s="trigger trigger efekt na kartě života. smíš ho aktivovat ve chvíli, kdy kartu bereš do ruky jako zranění. obrat z prohry."><div class="top"><span class="term" lang="en">[Trigger]</span><span class="cz">Trigger</span></div><div class="def">Efekt na kartě života, který smíš spustit, když ji bereš jako zranění.</div><div class="ex">Umí otočit hru, když prohráváš.</div></div>
+        <div class="card" data-s="counter keyword counter hodnota na kartě nebo counter event, kterou v counter kroku přidáš k power obránce. hlavní obrana z ruky."><div class="top"><span class="term" lang="en">[Counter]</span><span class="cz">Counter</span></div><div class="def">Bonus z ruky, který v counter kroku přidá power bránící kartě.</div><div class="ex">Karta s +2000 counter je skvělá obrana.</div></div>
+      </div></div>
+
+      <div class="gsec" data-cat="zdroje"><div class="gsec-head"><h3>DON!! a zdroje</h3><span class="count" aria-label="4 pojmy">4</span></div><div class="grid">
+        <div class="card" data-s="don!! don univerzální zdroj. každý tah přidáš dvě (první tah jedna), strop je deset. platíš jimi cenu karet."><div class="top"><span class="term" lang="en">DON!!</span><span class="cz">DON</span></div><div class="def">Univerzální zdroj. Každý tah +2 (první tah 1), strop 10.</div><div class="ex">Žádné barvy, žádný mana screw.</div></div>
+        <div class="card" data-s="don attach připnutí don dáš aktivní don na leadera nebo charakter a získáš +1000 power do konce tahu. hlavní bojový trik."><div class="top"><span class="term" lang="en">DON!! attach</span><span class="cz">Připnutí DON</span></div><div class="def">Aktivní DON!! na kartu dá +1000 power do konce tahu.</div><div class="ex">Dvě DON!! = +2000 na útok.</div></div>
+        <div class="card" data-s="cost cena kolik don zaplatíš za zahrání karty. otočíš tolik svých don do rested. levné karty na začátek, drahé později."><div class="top"><span class="term" lang="en">Cost</span><span class="cz">Cena</span></div><div class="def">Kolik DON!! otočíš, abys kartu zahrál.</div><div class="ex">Cena 3 = otočíš tři DON!!.</div></div>
+        <div class="card" data-s="don!! deck don balíček deset don karet stranou mimo hlavní balíček. pro všechny hráče stejné. odsud roste tvůj zdroj."><div class="top"><span class="term" lang="en">DON!! deck</span><span class="cz">DON balíček</span></div><div class="def">Deset DON!! karet stranou, oddělených od hlavního balíčku.</div><div class="ex">Stejný pro každého hráče.</div></div>
+      </div></div>
+
+      <div class="gsec" data-cat="zony"><div class="gsec-head"><h3>Zóny</h3><span class="count" aria-label="6 pojmů">6</span></div><div class="grid">
+        <div class="card" data-s="deck balíček tvých 50 karet lícem dolů. líznout a nemít z čeho = prohra. hlídej deck out."><div class="top"><span class="term" lang="en">Deck</span><span class="cz">Balíček</span></div><div class="def">Tvých 50 karet lícem dolů. Prázdný balíček při líznutí = prohra.</div><div class="ex">Deck out je reálná cesta k porážce.</div></div>
+        <div class="card" data-s="life život area karty lícem dolů podle life leadera. zásah je bere do ruky. dojdou-li, další zásah = prohra."><div class="top"><span class="term" lang="en">Life</span><span class="cz">Život</span></div><div class="def">Karty lícem dolů podle Life leadera. Zásah je bere do ruky.</div><div class="ex">Zásah na 0 životě = prohra.</div></div>
+        <div class="card" data-s="hand ruka karty, co držíš. zároveň tvůj zdroj counteru v obraně. prázdná ruka = žádná obrana."><div class="top"><span class="term" lang="en">Hand</span><span class="cz">Ruka</span></div><div class="def">Karty, co držíš — a zároveň tvůj zdroj counteru v obraně.</div><div class="ex">Prázdná ruka znamená žádnou obranu.</div></div>
+        <div class="card" data-s="character area deska charakterů kde stojí tvoji charaktery, nejvýš pět. šestého zahraješ, jen když jiného odloučíš."><div class="top"><span class="term" lang="en">Character area</span><span class="cz">Deska charakterů</span></div><div class="def">Kde stojí tvoji charaktery — nejvýš pět.</div><div class="ex">Šestého jen výměnou za odloučení jiného.</div></div>
+        <div class="card" data-s="cost area zdrojová zóna kde leží tvé don karty, aktivní i otočené. odsud platíš ceny a připínáš don na útok."><div class="top"><span class="term" lang="en">Cost area</span><span class="cz">Zdrojová zóna</span></div><div class="def">Kde leží tvé DON!!, aktivní i rested. Odsud platíš ceny.</div><div class="ex">Deset DON!! je strop.</div></div>
+        <div class="card" data-s="trash odhazoviště mrtvé a odhozené karty lícem nahoru. sem jdou ko charaktery a použité eventy. obdoba hřbitova."><div class="top"><span class="term" lang="en">Trash</span><span class="cz">Odhazoviště</span></div><div class="def">Mrtvé a odhozené karty lícem nahoru.</div><div class="ex">Sem jdou KO charaktery a použité eventy.</div></div>
+      </div></div>
+
+      <div class="gsec" data-cat="pravidla"><div class="gsec-head"><h3>Pravidla hry</h3><span class="count" aria-label="5 pojmů">5</span></div><div class="grid">
+        <div class="card" data-s="first turn první tah hráč na tahu první nelíže, bere jen jedno don a nesmí útočit. vyrovnává výhodu prvního tahu."><div class="top"><span class="term" lang="en">First turn</span><span class="cz">První tah</span></div><div class="def">První hráč nelíže, bere jen 1 DON!! a nesmí útočit.</div><div class="ex">Vyrovnává výhodu tahu.</div></div>
+        <div class="card" data-s="refresh phase refresh fáze první fáze tahu: narovnáš všechny své otočené karty včetně don. teprve pak líznutí a don."><div class="top"><span class="term" lang="en">Refresh phase</span><span class="cz">Refresh fáze</span></div><div class="def">První fáze tahu: narovnáš všechny své rested karty i DON!!.</div><div class="ex">Pak teprve líznutí a přidání DON!!.</div></div>
+        <div class="card" data-s="deck building stavba balíčku jeden leader a padesát karet, max čtyři kopie stejného čísla, jen barvy leadera, plus deset don."><div class="top"><span class="term" lang="en">Deck building</span><span class="cz">Stavba balíčku</span></div><div class="def">1 leader + 50 karet, max 4 kopie čísla, jen barvy leadera, +10 DON!!.</div><div class="ex">Barva karty musí sedět s leaderem.</div></div>
+        <div class="card" data-s="summoning nový charakter nemůže útočit v tahu, kdy přišel do hry. obchází to jen rush. plánuj útoky dopředu."><div class="top"><span class="term" lang="en">Summoning</span><span class="cz">Nový charakter</span></div><div class="def">Charakter zahraný tento tah nemůže útočit — pokud nemá Rush.</div><div class="ex">Počítej s tím u lethalu.</div></div>
+        <div class="card" data-s="deck out vymlácení nemůžeš-li si na začátku tahu líznout, prohráváš. druhá cesta k výhře vedle života."><div class="top"><span class="term" lang="en">Deck out</span><span class="cz">Vymlácení</span></div><div class="def">Nemůžeš-li si na začátku tahu líznout, prohráváš.</div><div class="ex">Druhá cesta k výhře vedle života.</div></div>
+      </div></div>
+
+      <div class="gsec" data-cat="slang"><div class="gsec-head"><h3>Slang u stolu</h3><span class="count" aria-label="6 pojmů">6</span></div><div class="grid">
+        <div class="card" data-s="rush deck agro balíček balíček stavěný na rychlé útoky a rush karty. chce sundat život dřív, než se soupeř rozjede."><div class="top"><span class="term" lang="en">Rush deck</span><span class="cz">Agro balíček</span></div><div class="def">Balíček na rychlé útoky, který chce sundat život brzy.</div><div class="ex">Trestá pomalé rozehrání.</div></div>
+        <div class="card" data-s="wall zeď defenzivní balíček plný blockerů a counterů. drží se, dokud soupeři nedojde palivo. opak agra."><div class="top"><span class="term" lang="en">Wall</span><span class="cz">Zeď</span></div><div class="def">Defenzivní styl plný blockerů a counterů, co soupeře ubrání.</div><div class="ex">Vyhrává v pozdní hře.</div></div>
+        <div class="card" data-s="trade výměna necháš charaktery zabít se navzájem, abys vyčistil desku. souboj power za power. výhodná výměna vyhrává hry."><div class="top"><span class="term" lang="en">Trade</span><span class="cz">Výměna</span></div><div class="def">Necháš charaktery vyřadit se navzájem, abys vyčistil desku.</div><div class="ex">Výhodná výměna power za power.</div></div>
+        <div class="card" data-s="ramp zrychlení zdrojů typicky fialová: utrácí a vrací don, aby měla velké karty dřív. skok přes křivku."><div class="top"><span class="term" lang="en">Ramp</span><span class="cz">Zrychlení zdrojů</span></div><div class="def">Manipulace s DON!! (hlavně fialová), abys měl velké karty dřív.</div><div class="ex">Skok přes křivku cen.</div></div>
+        <div class="card" data-s="pump posílení připnutí don nebo efekt, co dočasně zvedne power do souboje. +1000 za každé don."><div class="top"><span class="term" lang="en">Pump</span><span class="cz">Posílení</span></div><div class="def">Dočasné zvednutí power do souboje, typicky připnutím DON!!.</div><div class="ex">+1000 power za každé připnuté DON!!.</div></div>
+        <div class="card" data-s="brick cihla mrtvá ruka bez levných karet nebo counterů. nerozjedeš s ní hru ani se nebráníš. důvod pro konzistenci."><div class="top"><span class="term" lang="en">Brick</span><span class="cz">Mrtvá ruka</span></div><div class="def">Ruka bez levných karet nebo counterů, se kterou hru nerozjedeš.</div><div class="ex">Proto se hraje na konzistenci.</div></div>
+      </div></div>
+
+    </div>
+    <div class="empty" id="empty" role="status" aria-live="polite">Nic takového v taháku není. Zkus jiné slovo.</div>
+  </section>
+
+  <footer>
+    Untap ✦ společník k <a href="https://foilio.cards">Foiliu</a>. Uzavřený slovník, jakmile ho znáš, přečteš skoro každou kartu.<br>
+    <a href="index.html">← Zpět na výběr her</a> · Detailní znění pravidel má oficiální One Piece Card Game rulebook.
+  </footer>
+</div>
+
+<nav class="tabbar" aria-label="Rychlá navigace">
+  <a class="tab" href="#tah" data-t="tah"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v4h-4"/></svg><span>Tah</span></a>
+  <a class="tab" href="#karta" data-t="karta"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2.5"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><span>Karta</span></a>
+  <a class="tab" href="#barvy" data-t="barvy"><svg viewBox="0 0 24 24"><path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11Z"/></svg><span>Barvy</span></a>
+  <a class="tab" href="#souboj" data-t="souboj"><svg viewBox="0 0 24 24"><path d="M14.5 4.5 20 4l-.5 5.5L9 20l-5-5 10.5-10.5Z"/><path d="m4 15 5 5"/><path d="M9.5 4.5 4 4l.5 5.5L15 20l5-5"/></svg><span>Souboj</span></a>
+  <a class="tab" href="#slovnik" data-t="slovnik"><svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5Z"/><path d="M4 20.5A2.5 2.5 0 0 1 6.5 18H20"/></svg><span>Slovník</span></a>
+</nav>
+
+<script>
+const content=document.getElementById('content');
+const chipsEl=document.getElementById('chips');
+const emptyEl=document.getElementById('empty');
+const qEl=document.getElementById('q');
+let activeCat='all';
+
+const secs=[...content.querySelectorAll('.gsec')].map(el=>({
+  el, cat:el.dataset.cat, countEl:el.querySelector('.count'),
+  cards:[...el.querySelectorAll('.card')].map(c=>({el:c,hay:c.dataset.s}))
+}));
+
+function render(){
+  const q=qEl.value.trim().toLowerCase();
+  let any=false;
+  for(const s of secs){
+    const inCat=activeCat==='all'||activeCat===s.cat;
+    let n=0;
+    for(const c of s.cards){
+      const hit=!q||c.hay.includes(q);
+      c.el.hidden=!hit;
+      if(hit)n++;
+    }
+    const show=inCat&&n>0;
+    s.el.hidden=!show;
+    if(show){
+      any=true;
+      s.countEl.textContent=n;
+      s.countEl.setAttribute('aria-label',n+' pojmů');
+    }
+  }
+  emptyEl.classList.toggle('show',!any);
+}
+
+chipsEl.addEventListener('click',e=>{
+  const b=e.target.closest('.chip');
+  if(!b)return;
+  activeCat=b.dataset.cat;
+  chipsEl.querySelectorAll('.chip').forEach(c=>{
+    const on=c===b;
+    c.classList.toggle('active',on);
+    c.setAttribute('aria-pressed',on);
+  });
+  render();
+});
+qEl.addEventListener('input',render);
+
+const tabs=[...document.querySelectorAll('.tab')];
+const ids=['tah','karta','barvy','souboj','slovnik'];
+const crossing=new Set();
+let current=ids[0];
+const io=new IntersectionObserver(es=>{
+  for(const e of es) e.isIntersecting?crossing.add(e.target.id):crossing.delete(e.target.id);
+  for(let i=ids.length-1;i>=0;i--) if(crossing.has(ids[i])){current=ids[i];break;}
+  for(const t of tabs){
+    const on=t.dataset.t===current;
+    t.classList.toggle('active',on);
+    on?t.setAttribute('aria-current','true'):t.removeAttribute('aria-current');
+  }
+},{threshold:0,rootMargin:'-88px 0px -78% 0px'});
+for(const id of ids){
+  const el=document.getElementById(id);
+  if(el)io.observe(el);
+}
+</script>
+</body>
+</html>

@@ -3,16 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Untap — průvodce pro začátek s Magicem</title>
-<meta name="description" content="Struktura tahu, jak číst kartu, pět barev, souboj, pravidla, typické chyby a vyhledávatelný slovník 67 pojmů. Česky, na jednom místě.">
+<title>Untap — taháky pro začátek s karetními hrami</title>
+<meta name="description" content="Stručné české průvodce pro úplný začátek s Magic: The Gathering, Pokémon TCG a One Piece Card Game. Struktura tahu, jak číst kartu, souboj, pravidla a vyhledávatelný slovník.">
 <meta name="theme-color" content="#f5f5f7">
 <link rel="canonical" href="https://mtg-untap.vercel.app/">
-<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
 
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://mtg-untap.vercel.app/">
-<meta property="og:title" content="Untap — průvodce pro začátek s Magicem">
-<meta property="og:description" content="Struktura tahu, jak číst kartu, pět barev, souboj, pravidla, typické chyby a vyhledávatelný slovník 67 pojmů. Česky, na jednom místě.">
+<meta property="og:title" content="Untap — taháky pro začátek s karetními hrami">
+<meta property="og:description" content="Stručné české průvodce pro úplný začátek s Magic, Pokémon a One Piece. Vše na jednom místě.">
 <meta property="og:image" content="https://mtg-untap.vercel.app/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -22,183 +22,28 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
 <style>
-  :root{
-    /* Palette shared with Foilio (foilio.cards) */
-    --bg:#f5f5f7; --surface:#ffffff;
-    --text:#0a0a0a; --muted:#5a5a5a; --muted-2:#6b6b6b;
-    --line:#eeeef1; --line-2:#e2e2e6; --line-3:#aaaaaa;
-    /* --red fills; --red-ink is the small-text red that clears AA on tints */
-    --red:#e5001c; --red-ink:#c0001a; --red-soft:#fce6e8; --red-tint:#fef4f5;
-    --violet:#7c3aed; --violet-soft:#f2ebfd;
-    --green:#107e4f; --green-soft:#e3f6ec;
-    --gold:#e5922a;
-    --w:#e7dcae; --u:#5a97d6; --b:#8a7ca0; --r:#e56a5c; --g:#5aa877;
-
-    --t-2xs:11px; --t-xs:12px; --t-sm:13px; --t-md:14px;
-    --t-lg:15px; --t-xl:16px; --t-2xl:20px; --t-3xl:26px;
-
-    --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px;
-    --sp-5:20px; --sp-6:24px; --sp-8:32px; --sp-10:40px;
-
-    --r-sm:8px; --r-md:12px; --r-lg:16px; --r-pill:999px;
-    --shadow:0 6px 24px rgba(10,10,10,.06); --shadow-sm:0 2px 10px rgba(10,10,10,.05);
-  }
-  *{box-sizing:border-box;margin:0;padding:0}
-  [hidden]{display:none!important}
-  html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
-  body{background:var(--bg);color:var(--text);font-family:'Poppins',system-ui,sans-serif;line-height:1.5;font-size:var(--t-xl);padding-bottom:104px;-webkit-font-smoothing:antialiased}
-  .wrap{max-width:760px;margin:0 auto;padding:0 var(--sp-4)}
-  a{color:inherit;text-decoration:none}
-
-  /* Top bar / logo */
-  .topbar{display:flex;align-items:center;justify-content:center;padding:var(--sp-5) 0 var(--sp-2)}
-  .logo{font-weight:800;font-style:italic;font-size:30px;letter-spacing:-.5px;color:var(--text)}
-
-  /* Hero — full-bleed, Foilio-style stacked headline */
-  .hero{text-align:center;padding:var(--sp-6) var(--sp-2) var(--sp-8)}
-  .hero .kicker{font-size:var(--t-xs);font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
-  .hero h1{font-weight:800;font-size:clamp(34px,9vw,60px);letter-spacing:-1.5px;margin-top:var(--sp-3);line-height:1.14}
-  .hero h1 em{display:block;font-style:italic;color:var(--red)}
-  .hero p{color:var(--muted);font-size:var(--t-lg);max-width:44ch;margin:var(--sp-4) auto 0;line-height:1.6}
-  .pips{display:flex;gap:var(--sp-2);justify-content:center;margin-top:var(--sp-6)}
-  .pip{width:13px;height:13px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12)}
-  .pip.w{background:var(--w)} .pip.u{background:var(--u)} .pip.b{background:var(--b)} .pip.r{background:var(--r)} .pip.g{background:var(--g)}
-
-  /* Section shell */
-  .block{margin-top:var(--sp-8);scroll-margin-top:var(--sp-4)}
-  .eyebrow{font-size:var(--t-xs);font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding-left:var(--sp-1)}
-  .block>h2{font-weight:800;font-size:var(--t-3xl);letter-spacing:-.6px;margin-top:var(--sp-1);padding-left:var(--sp-1)}
-  .lead{color:var(--muted);font-size:var(--t-md);margin-top:var(--sp-1);padding-left:var(--sp-1);max-width:58ch}
-  .panel{background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow);padding:var(--sp-5);margin-top:var(--sp-4)}
-
-  /* One surface card, many users */
-  .clr,.s3,.rule,.miss .m,.map,.diff,.card,.lifo .lv{background:var(--surface);border-radius:var(--r-md);box-shadow:var(--shadow-sm);padding:var(--sp-3) var(--sp-4)}
-  /* Emphasis inside muted body copy */
-  :is(.cd,.sd,.rd,.fix,.dd,.def) b{color:var(--text);font-weight:700}
-
-  /* Turn flow */
-  .flow{display:flex;flex-wrap:wrap;gap:var(--sp-2)}
-  .step{flex:1 1 120px;background:var(--bg);border-radius:var(--r-md);padding:var(--sp-3)}
-  .step .n{font-weight:800;font-size:var(--t-xs);color:var(--red-ink)}
-  .step .t{font-weight:700;font-size:var(--t-lg);margin:1px 0}
-  .step .d{font-size:var(--t-sm);color:var(--muted);line-height:1.4}
-
-  /* Card anatomy */
-  .anat{display:flex;gap:var(--sp-5);flex-wrap:wrap;align-items:flex-start;margin-top:var(--sp-4)}
-  .mtgcard{flex:0 0 244px;max-width:100%;background:#14161f;padding:var(--sp-2);border-radius:var(--r-lg);box-shadow:var(--shadow)}
-  .mc-reg{position:relative;background:#f6f4ec;border:1px solid #e4dfce;border-radius:var(--r-sm);margin-bottom:6px;color:#23272f}
-  .mc-badge{position:absolute;top:-9px;right:-9px;width:22px;height:22px;border-radius:50%;background:var(--red);color:#fff;font-weight:800;font-size:var(--t-xs);display:flex;align-items:center;justify-content:center;z-index:2;box-shadow:0 2px 6px rgba(0,0,0,.25)}
-  .mc-title{display:flex;justify-content:space-between;align-items:center;gap:6px;padding:7px 9px}
-  .mc-name{font-weight:800;font-size:var(--t-md)}
-  .mc-cost{display:flex;gap:3px}
-  .sym{width:18px;height:18px;border-radius:50%;font-weight:800;font-size:11px;display:inline-flex;align-items:center;justify-content:center;color:#241a10;box-shadow:inset 0 0 0 1px rgba(0,0,0,.18)}
-  .sym.w{background:#eee4c4} .sym.u{background:var(--u)} .sym.b{background:#4a4356;color:#fff} .sym.r{background:var(--r)} .sym.g{background:var(--g)} .sym.gen{background:#c9c3b4} .sym.c{background:#d7dde2}
-  .mc-art{height:92px;background:linear-gradient(135deg,#cfe0ec,#9fb8d8 55%,#c3b6d6);border-radius:var(--r-sm);display:flex;align-items:flex-end;justify-content:center;color:#424852;font-size:var(--t-2xs);padding-bottom:5px}
-  .mc-type{display:flex;justify-content:space-between;align-items:center;padding:6px 9px;font-size:var(--t-xs);font-weight:700}
-  .mc-type .rar{width:15px;height:15px;border-radius:3px;background:linear-gradient(135deg,var(--gold),#b96f1e);transform:rotate(45deg)}
-  .mc-text{padding:var(--sp-2) 9px;font-size:var(--t-xs);line-height:1.5}
-  .mc-text .fl{color:#766f62;font-style:italic;margin-top:6px;font-size:var(--t-2xs)}
-  .mc-ptrow{display:flex;justify-content:flex-end;padding-top:2px}
-  .mc-pt{position:relative;background:#f6f4ec;border:1px solid #e4dfce;border-radius:var(--r-sm);padding:4px 13px;font-weight:800;font-size:var(--t-md);color:#23272f}
-  .legend{flex:1 1 280px;min-width:230px;background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow);padding:var(--sp-1) var(--sp-5)}
-  .legend ol{list-style:none;counter-reset:l}
-  .legend li{counter-increment:l;position:relative;padding:11px 0 11px 34px;border-bottom:1px solid var(--line);font-size:var(--t-md);line-height:1.45}
-  .legend li:last-child{border-bottom:0}
-  .legend li::before{content:counter(l);position:absolute;left:0;top:11px;width:22px;height:22px;border-radius:50%;background:var(--red-soft);color:var(--red-ink);font-weight:800;font-size:var(--t-xs);display:flex;align-items:center;justify-content:center}
-  .legend b{color:var(--text);font-weight:800}
-  .legend .czl{color:var(--muted)}
-
-  /* Colors */
-  .colors{display:grid;gap:var(--sp-2);margin-top:var(--sp-4)}
-  .clr{display:flex;gap:var(--sp-3);align-items:flex-start;border-left:4px solid var(--ca)}
-  .clr .dot{flex:0 0 24px;height:24px;border-radius:50%;background:var(--ca);margin-top:1px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
-  .clr .cn{font-weight:800;font-size:var(--t-lg)}
-  .clr .cn span{color:var(--muted);font-weight:600;font-size:var(--t-sm);margin-left:var(--sp-1)}
-  .clr .cd{font-size:var(--t-md);color:var(--muted);margin-top:var(--sp-1);line-height:1.5}
-
-  /* Numbered steps (combat) */
-  .steps3{display:grid;gap:var(--sp-2);margin-top:var(--sp-4)}
-  .s3{position:relative;padding-left:54px}
-  .s3 .num{position:absolute;left:var(--sp-4);top:var(--sp-3);width:28px;height:28px;border-radius:50%;background:var(--red);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:var(--t-md)}
-  .s3 .st{font-weight:800;font-size:var(--t-lg)}
-  .s3 .st span{color:var(--red-ink);font-size:var(--t-sm);font-weight:700;margin-left:var(--sp-2)}
-  .s3 .sd{font-size:var(--t-md);color:var(--muted);margin-top:var(--sp-1);line-height:1.5}
-  .callout{margin-top:var(--sp-3);background:var(--red-tint);border-radius:var(--r-md);padding:var(--sp-3) var(--sp-4);font-size:var(--t-md);line-height:1.5}
-  .callout b{color:var(--red-ink)}
-
-  /* Stack: drawn top-down, because the last spell cast resolves first */
-  .lifo{display:grid;gap:var(--sp-2);margin-top:var(--sp-3)}
-  .lifo .lv{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);border-left:4px solid var(--line-2)}
-  .lifo .lv.top{border-left-color:var(--red)}
-  .lifo .lt{font-weight:800;font-size:var(--t-md)}
-  .lifo .ln{font-size:var(--t-sm);color:var(--muted);margin-top:2px}
-  .lifo .ord{flex:0 0 auto;text-align:right;font-size:var(--t-2xs);font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
-  .lifo .lv.top .ord{color:var(--red-ink)}
-
-  /* Rules grid */
-  .rules{display:grid;gap:var(--sp-2);margin-top:var(--sp-4)}
-  @media(min-width:600px){.rules{grid-template-columns:1fr 1fr}}
-  .rule .rt{font-weight:800;font-size:var(--t-md)}
-  .rule .rd{font-size:var(--t-sm);color:var(--muted);margin-top:var(--sp-1);line-height:1.5}
-
-  /* Mistakes */
-  .miss{display:grid;gap:var(--sp-2);margin-top:var(--sp-4)}
-  .miss .bad,.miss .fix{display:flex;gap:var(--sp-2);align-items:flex-start;font-size:var(--t-md);line-height:1.5}
-  .miss .bad{font-weight:700}
-  .miss .fix{margin-top:var(--sp-2);padding-top:var(--sp-2);border-top:1px solid var(--line);color:var(--muted)}
-  .tag{flex:0 0 auto;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:var(--t-sm);margin-top:-1px}
-  .tag.x{background:var(--red-soft);color:var(--red-ink)} .tag.c{background:var(--green-soft);color:var(--green)}
-
-  /* HS -> MTG */
-  .maps{display:grid;gap:var(--sp-2);margin-top:var(--sp-4)}
-  @media(min-width:600px){.maps{grid-template-columns:1fr 1fr}}
-  .map{display:flex;align-items:center;gap:var(--sp-2)}
-  .map .hs{font-weight:700;font-size:var(--t-md);flex:1}
-  .map .arrow{color:var(--red-ink);font-weight:800;flex:0 0 auto}
-  .map .mtg{font-weight:800;font-size:var(--t-md);flex:1;text-align:right}
-  .map .mtg small{display:block;color:var(--muted);font-weight:500;font-size:var(--t-2xs)}
-  .diffs{margin-top:var(--sp-3);display:grid;gap:var(--sp-2)}
-  .diff{border-left:4px solid var(--red)}
-  .diff .dt{font-weight:800;font-size:var(--t-md)}
-  .diff .dd{font-size:var(--t-sm);color:var(--muted);margin-top:var(--sp-1);line-height:1.5}
-
-  /* Glossary */
-  .search{position:relative;margin-top:var(--sp-4)}
-  .search input{width:100%;background:var(--surface);border:1px solid var(--line-2);color:var(--text);border-radius:var(--r-lg);padding:var(--sp-4) var(--sp-4) var(--sp-4) 48px;font-family:inherit;font-size:var(--t-lg);font-weight:500;outline:none;box-shadow:var(--shadow-sm);transition:border-color .15s,box-shadow .15s}
-  .search input::placeholder{color:var(--muted-2)}
-  .search input:focus{border-color:var(--red);box-shadow:0 0 0 3px var(--red-tint)}
-  .search .ic{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:30px;height:30px;border-radius:50%;background:var(--red-soft);display:flex;align-items:center;justify-content:center}
-  .search .ic svg{stroke:var(--red-ink)}
-  .chips{display:flex;gap:var(--sp-2);flex-wrap:wrap;margin-top:var(--sp-3)}
-  .chip{background:var(--surface);border:1px solid var(--line-2);color:var(--muted);border-radius:var(--r-pill);padding:var(--sp-2) var(--sp-4);font-family:inherit;font-size:var(--t-sm);font-weight:700;cursor:pointer;transition:all .14s}
-  .chip:hover{color:var(--text);border-color:var(--line-3)}
-  .chip.active{background:var(--red);border-color:var(--red);color:#fff}
-  .chip:focus-visible{outline:2px solid var(--red);outline-offset:2px}
-  .gsec{margin-top:var(--sp-6)}
-  .gsec-head{display:flex;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-3);padding-left:var(--sp-1)}
-  .gsec-head h3{font-weight:800;font-size:var(--t-2xl);letter-spacing:-.3px}
-  .gsec-head .count{background:var(--violet-soft);color:var(--violet);font-weight:800;font-size:var(--t-xs);padding:3px 10px;border-radius:var(--r-pill)}
-  .grid{display:grid;gap:var(--sp-2)}
-  @media(min-width:600px){.grid{grid-template-columns:1fr 1fr}}
-  .card .top{display:flex;align-items:baseline;justify-content:space-between;gap:var(--sp-2);flex-wrap:wrap}
-  .term{font-weight:800;font-size:var(--t-lg);letter-spacing:-.2px}
-  .cz{font-size:var(--t-sm);color:var(--muted);font-weight:600}
-  .def{font-size:var(--t-md);margin-top:var(--sp-2);line-height:1.5}
-  .ex{font-size:var(--t-sm);margin-top:var(--sp-2);color:var(--muted);border-left:3px solid var(--red-soft);padding-left:var(--sp-2)}
-  .empty{display:none;text-align:center;color:var(--muted);padding:var(--sp-10) 0;font-size:var(--t-lg)}
-  .empty.show{display:block}
-
-  footer{margin-top:var(--sp-10);padding:var(--sp-6) var(--sp-1) 0;border-top:1px solid var(--line-2);color:var(--muted-2);font-size:var(--t-sm);text-align:center;line-height:1.7}
-
-  /* Foilio-style floating bottom nav */
-  .tabbar{position:fixed;left:50%;transform:translateX(-50%);bottom:var(--sp-4);z-index:60;display:flex;gap:2px;background:var(--surface);border-radius:var(--r-pill);box-shadow:0 8px 30px rgba(10,10,10,.16);padding:var(--sp-2);max-width:calc(100% - 24px)}
-  .tab{display:flex;flex-direction:column;align-items:center;gap:3px;padding:var(--sp-2) var(--sp-3);border-radius:var(--r-pill);color:var(--muted);transition:all .15s;min-width:56px}
-  .tab svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-  .tab span{font-size:var(--t-2xs);font-weight:700;letter-spacing:-.2px}
-  .tab.active{color:var(--red-ink);background:var(--red-tint)}
-
-  @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+  body{padding-bottom:var(--sp-10)}
+  .games{display:grid;gap:var(--sp-4);margin-top:var(--sp-4)}
+  @media(min-width:640px){.games{grid-template-columns:1fr 1fr 1fr}}
+  .game{position:relative;display:flex;flex-direction:column;background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow);padding:var(--sp-5);overflow:hidden;transition:transform .15s,box-shadow .15s}
+  .game::before{content:"";position:absolute;inset:0 0 auto 0;height:5px;background:var(--ga)}
+  .game:hover{transform:translateY(-3px);box-shadow:0 12px 34px rgba(10,10,10,.12)}
+  .game .gpips{display:flex;gap:6px;margin-top:var(--sp-2)}
+  .game .gpips .pip{width:12px;height:12px}
+  .game h2{font-weight:800;font-size:var(--t-2xl);letter-spacing:-.4px;margin-top:var(--sp-3)}
+  .game .gsub{font-size:var(--t-sm);color:var(--muted);font-weight:600;margin-top:2px}
+  .game .gdesc{font-size:var(--t-md);color:var(--muted);line-height:1.5;margin-top:var(--sp-3);flex:1}
+  .game .gcta{display:inline-flex;align-items:center;gap:6px;margin-top:var(--sp-4);font-weight:800;font-size:var(--t-md);color:var(--ga)}
+  .game .gcta svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+  .why{margin-top:var(--sp-10)}
+  .why h2{font-weight:800;font-size:var(--t-2xl);letter-spacing:-.3px;padding-left:var(--sp-1)}
+  .whycards{display:grid;gap:var(--sp-2);margin-top:var(--sp-3)}
+  @media(min-width:600px){.whycards{grid-template-columns:1fr 1fr}}
+  .wc{background:var(--surface);border-radius:var(--r-md);box-shadow:var(--shadow-sm);padding:var(--sp-4)}
+  .wc .wt{font-weight:800;font-size:var(--t-md)}
+  .wc .wd{font-size:var(--t-sm);color:var(--muted);line-height:1.5;margin-top:var(--sp-1)}
 </style>
 </head>
 <body>
@@ -210,300 +55,48 @@
 
   <div class="hero">
     <div class="kicker">Průvodce pro úplný začátek</div>
-    <h1>Nauč se hrát <em>Magic</em></h1>
-    <p>Struktura tahu, jak číst kartu, pět barev, souboj, pravidla, chyby a vyhledávatelný slovník. Vše na jednom místě.</p>
-    <div class="pips" aria-hidden="true"><span class="pip w"></span><span class="pip u"></span><span class="pip b"></span><span class="pip r"></span><span class="pip g"></span></div>
+    <h1>Nauč se hrát<em>karetní hry</em></h1>
+    <p>Struktura tahu, jak číst kartu, souboj, pravidla, typické chyby a vyhledávatelný slovník. Pro každou hru na jednom místě. Vyber si, kterou chceš pochopit.</p>
   </div>
 
-  <!-- TURN -->
-  <section class="block" id="tah">
-    <div class="eyebrow">Kostra hry</div>
-    <h2>Struktura tahu</h2>
-    <p class="lead">Jediné, co má cenu si zapamatovat. Zbytek je vždy napsaný na kartě.</p>
-    <div class="panel">
-      <div class="flow">
-        <div class="step"><div class="n">01</div><div class="t">Untap</div><div class="d">Narovnáš všechny své karty.</div></div>
-        <div class="step"><div class="n">02</div><div class="t">Upkeep</div><div class="d">Spustí se efekty „na začátku tahu".</div></div>
-        <div class="step"><div class="n">03</div><div class="t">Draw</div><div class="d">Lízneš si kartu z knihovny.</div></div>
-        <div class="step"><div class="n">04</div><div class="t">Main 1</div><div class="d">Zahraj land, sesílej kouzla.</div></div>
-        <div class="step"><div class="n">05</div><div class="t">Combat</div><div class="d">Útok tvory, soupeř blokuje.</div></div>
-        <div class="step"><div class="n">06</div><div class="t">Main 2</div><div class="d">Ještě můžeš dohrát karty.</div></div>
-        <div class="step"><div class="n">07</div><div class="t">End</div><div class="d">Konec tahu, srovnej ruku na 7.</div></div>
-      </div>
-    </div>
-  </section>
+  <div class="games">
+    <a class="game" href="magic.html" style="--ga:#c0001a">
+      <div class="gpips"><span class="pip w"></span><span class="pip u"></span><span class="pip b"></span><span class="pip r"></span><span class="pip g"></span></div>
+      <h2>Magic</h2>
+      <div class="gsub">The Gathering</div>
+      <div class="gdesc">Pět barev, zásobník a priorita, souboj přes blokování a slovník 81 pojmů. Nejhlubší z trojice — a most z Hearthstonu.</div>
+      <span class="gcta">Otevřít tahák <svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></span>
+    </a>
+    <a class="game" href="pokemon.html" style="--ga:#1f5bb5">
+      <div class="gpips"><span class="pip grass"></span><span class="pip fire"></span><span class="pip water"></span><span class="pip lightning"></span><span class="pip psychic"></span></div>
+      <h2>Pokémon</h2>
+      <div class="gsub">Trading Card Game</div>
+      <div class="gdesc">Prize karty, typy energií, útok aktivním Pokémonem a slabina za dvojnásobek. Nejpřístupnější start ze všech.</div>
+      <span class="gcta">Otevřít tahák <svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></span>
+    </a>
+    <a class="game" href="onepiece.html" style="--ga:#9c3d12">
+      <div class="gpips"><span class="pip op-r"></span><span class="pip op-g"></span><span class="pip op-b"></span><span class="pip op-p"></span><span class="pip op-k"></span><span class="pip op-y"></span></div>
+      <h2>One Piece</h2>
+      <div class="gsub">Card Game</div>
+      <div class="gdesc">Leader a život v kartách, DON!! místo many, counter v obraně a šest barev. Svižné a agresivní.</div>
+      <span class="gcta">Otevřít tahák <svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></span>
+    </a>
+  </div>
 
-  <!-- CARD ANATOMY -->
-  <section class="block" id="karta">
-    <div class="eyebrow">Slovník na jedné kartě</div>
-    <h2>Jak číst kartu</h2>
-    <p class="lead">Karta ti sama řekne skoro vše. Tady je schéma s částmi, které tě zajímají.</p>
-    <div class="anat">
-      <div class="mtgcard" aria-label="Schéma karty">
-        <div class="mc-reg mc-title"><span class="mc-badge" style="right:auto;left:-9px">1</span><span class="mc-name">Frostpeak Seer</span><span class="mc-cost"><span class="mc-badge">2</span><span class="sym gen">2</span><span class="sym u">U</span></span></div>
-        <div class="mc-reg mc-art"><span class="mc-badge">3</span>ilustrace</div>
-        <div class="mc-reg mc-type"><span class="mc-badge">4</span><span>Creature — Human Wizard</span><span class="rar" title="symbol edice"></span><span class="mc-badge" style="top:6px;right:6px">5</span></div>
-        <div class="mc-reg mc-text"><span class="mc-badge">6</span>Flying<br>When Frostpeak Seer enters, scry 2.<div class="fl">„Vidí bouři dřív, než přijde." <span class="mc-badge" style="top:auto;bottom:-9px">7</span></div></div>
-        <div class="mc-ptrow"><span class="mc-pt">2/3<span class="mc-badge">8</span></span></div>
-      </div>
-      <div class="legend">
-        <ol>
-          <li><b>Name</b> <span class="czl">— jméno karty.</span></li>
-          <li><b>Mana cost</b> <span class="czl">— manová cena. Zaplatíš 2 libovolné many + 1 modrou.</span></li>
-          <li><b>Art</b> <span class="czl">— ilustrace, na hru nemá vliv.</span></li>
-          <li><b>Type line</b> <span class="czl">— co karta je (tvor) a její podtypy.</span></li>
-          <li><b>Set symbol</b> <span class="czl">— edice a vzácnost (barva = rarita).</span></li>
-          <li><b>Rules text</b> <span class="czl">— schopnosti a efekty. To důležité.</span></li>
-          <li><b>Flavor text</b> <span class="czl">— příběh kurzívou. Nemá vliv na hru.</span></li>
-          <li><b>Power / Toughness</b> <span class="czl">— síla / odolnost. Jen u tvorů.</span></li>
-        </ol>
-      </div>
+  <div class="why">
+    <h2>Co v každém taháku najdeš</h2>
+    <div class="whycards">
+      <div class="wc"><div class="wt">Kostra hry napřed</div><div class="wd">Struktura tahu a souboj rozepsané krok za krokem. To jediné se opravdu učíš — zbytek je vždy napsaný na kartě.</div></div>
+      <div class="wc"><div class="wt">Jak číst kartu</div><div class="wd">Očíslované schéma karty pro danou hru. Až budeš vědět, co je kde, přečteš skoro každou.</div></div>
+      <div class="wc"><div class="wt">Vyhledávatelný slovník</div><div class="wd">Anglický termín, český význam, příklad. Filtruj podle kategorie nebo napiš, co hledáš.</div></div>
+      <div class="wc"><div class="wt">Typické chyby a most z jiné hry</div><div class="wd">Čeho se vyvarovat na začátku a jak přenést, co už umíš z jiné karetní hry.</div></div>
     </div>
-  </section>
-
-  <!-- COLORS -->
-  <section class="block" id="barvy">
-    <div class="eyebrow">Barevný koláč</div>
-    <h2>Pět barev</h2>
-    <p class="lead">Každá barva má svůj styl. Pomáhá to pochopit tvůj balíček i to, co chystá soupeř.</p>
-    <div class="colors">
-      <div class="clr" style="--ca:var(--w)"><span class="dot"></span><div><div class="cn">White <span>Bílá · řád a ochrana</span></div><div class="cd">Malí efektivní tvorové v přesile, léčení, <b>ochrana</b> a rušení hrozeb.</div></div></div>
-      <div class="clr" style="--ca:var(--u)"><span class="dot"></span><div><div class="cn">Blue <span>Modrá · vědění a kontrola</span></div><div class="cd"><b>Líznutí karet</b>, protikouzla, létající tvorové a vracení věcí do ruky.</div></div></div>
-      <div class="clr" style="--ca:var(--b)"><span class="dot"></span><div><div class="cn">Black <span>Černá · moc a oběť</span></div><div class="cd"><b>Ničení tvorů</b>, návrat mrtvých ze hřbitova a moc za cenu vlastních životů.</div></div></div>
-      <div class="clr" style="--ca:var(--r)"><span class="dot"></span><div><div class="cn">Red <span>Červená · chaos a agrese</span></div><div class="cd">Rychlost, <b>haste</b> a přímé zranění (burn) na tvory i přímo na soupeře.</div></div></div>
-      <div class="clr" style="--ca:var(--g)"><span class="dot"></span><div><div class="cn">Green <span>Zelená · příroda a síla</span></div><div class="cd">Největší tvorové, <b>ramp</b> (mana navíc dřív) a férové souboje tvor proti tvorovi.</div></div></div>
-    </div>
-    <div class="callout"><b>Tip:</b> začátečnický balíček bývá ve dvou barvách. Nejjednodušší na naučení je jedna barva sama.</div>
-  </section>
-
-  <!-- COMBAT -->
-  <section class="block" id="souboj">
-    <div class="eyebrow">Krok za krokem</div>
-    <h2>Jak proběhne souboj</h2>
-    <p class="lead">Combat má tři kroky. Útočí vždy hráč, který je na tahu.</p>
-    <div class="steps3">
-      <div class="s3"><div class="num">1</div><div class="st">Vybereš útočníky <span>declare attackers</span></div><div class="sd">Otočíš (tapneš) tvory, kterými útočíš. Tvor s <b>Vigilance</b> se netapuje. Tvor, co přišel tento tah, útočit nemůže.</div></div>
-      <div class="s3"><div class="num">2</div><div class="st">Soupeř blokuje <span>declare blockers</span></div><div class="sd">Bránící hráč přiřadí své tvory k útočníkům. <b>Neblokovaný útočník jde do životů.</b> Jeden bloker = jeden útočník.</div></div>
-      <div class="s3"><div class="num">3</div><div class="st">Zranění naráz <span>combat damage</span></div><div class="sd">Útočník i bloker si rozdají zranění současně podle své <b>power</b>. Když je zranění ≥ odolnosti, tvor umře.</div></div>
-    </div>
-    <div class="callout"><b>Důležité:</b> zranění je simultánní, takže útočník i bloker můžou umřít oba. Výjimka je <b>First strike</b>, ten udeří dřív a může blokera zabít, než ten stihne odpovědět.</div>
-  </section>
-
-  <!-- STACK & PRIORITY -->
-  <section class="block" id="zasobnik">
-    <div class="eyebrow">Kdy smíš reagovat</div>
-    <h2>Zásobník a priorita</h2>
-    <p class="lead">Tohle Hearthstone nemá a plete se nejvíc. Kouzlo nezabere hned — nejdřív jde na zásobník a soupeř dostane šanci odpovědět.</p>
-    <div class="steps3">
-      <div class="s3"><div class="num">1</div><div class="st">Zahraješ kouzlo <span>na zásobník</span></div><div class="sd">Zaplatíš manu a kouzlo se položí na zásobník. <b>Zatím nedělá vůbec nic.</b></div></div>
-      <div class="s3"><div class="num">2</div><div class="st">Soupeř dostane prioritu <span>priority</span></div><div class="sd">Smí zahrát instant nebo schopnost. Ta se položí <b>navrch</b> tvého kouzla. Aktivní hráč, tedy ten na tahu, dostává prioritu vždycky první.</div></div>
-      <div class="s3"><div class="num">3</div><div class="st">Vyhodnocuje se odshora <span>resolve</span></div><div class="sd">Jakmile oba pasují, vyhodnotí se <b>vrchní</b> objekt zásobníku. Pak zase oba dostanou prioritu. <b>Poslední dovnitř, první ven.</b></div></div>
-    </div>
-
-    <div class="callout"><b>Příklad:</b> zahraješ <b>Lightning Bolt</b> na soupeřova 3/3. Soupeř v reakci zahraje <b>Giant Growth</b>. Zásobník teď vypadá takhle:</div>
-    <div class="lifo">
-      <div class="lv top"><div><div class="lt">Giant Growth</div><div class="ln">soupeř zahrál jako druhý, tvor dostane +3/+3</div></div><div class="ord">vyhodnotí se 1.</div></div>
-      <div class="lv"><div><div class="lt">Lightning Bolt</div><div class="ln">tys zahrál jako první, 3 zranění</div></div><div class="ord">vyhodnotí se 2.</div></div>
-    </div>
-    <div class="callout"><b>Výsledek:</b> tvor je 6/6 dřív, než ho zasáhnou 3 zranění. Přežije. Kdyby se zásobník vyhodnocoval odspodu, bylo by to naopak.</div>
-
-    <div class="rules">
-      <div class="rule"><div class="rt">Instant speed</div><div class="rd">Instanty a schopnosti s <b>Flash</b> zahraješ <b>kdykoli máš prioritu</b> — i v soupeřově tahu, i uprostřed souboje.</div></div>
-      <div class="rule"><div class="rt">Sorcery speed</div><div class="rd">Tvory, čarování, artefakty a země jen ve <b>svém main phase</b> a jen když je <b>zásobník prázdný</b>.</div></div>
-      <div class="rule"><div class="rt">Counter musí stihnout</div><div class="rd">Protikouzlit jde jen kouzlo, které <b>ještě leží na zásobníku</b>. Jakmile se vyhodnotí, je pozdě.</div></div>
-      <div class="rule"><div class="rt">Země nejdou na zásobník</div><div class="rd">Zahrání země není kouzlo. <b>Nedá se na ni reagovat</b> ani ji protikouzlit.</div></div>
-    </div>
-  </section>
-
-  <!-- RULES -->
-  <section class="block" id="pravidla">
-    <div class="eyebrow">Co se nejvíc plete</div>
-    <h2>Pravidla, na která pozor</h2>
-    <div class="rules">
-      <div class="rule"><div class="rt">Jeden land za tah</div><div class="rd">Smíš zahrát <b>jednu zemi za tah</b>. Je to zdarma rostoucí zdroj, hraj ji každý tah.</div></div>
-      <div class="rule"><div class="rt">Summoning sickness</div><div class="rd">Nový tvor <b>nemůže útočit ani tapovat</b>, dokud ho neovládáš od začátku tahu. Obchází to jen Haste.</div></div>
-      <div class="rule"><div class="rt">Mulligan (London)</div><div class="rd">Nelíbí se ti ruka? Zamíchej a lízni 7 znovu, pak dej <b>tolik karet dospodu, kolik mulliganů</b> jsi vzal.</div></div>
-      <div class="rule"><div class="rt">Ruka max 7</div><div class="rd">Na konci tahu, když máš přes 7 karet, přebytek <b>odhodíš</b> na hřbitov.</div></div>
-      <div class="rule"><div class="rt">Velikost balíčku</div><div class="rd">Konstruktované min. <b>60 karet</b>, max 4 kopie karty (kromě základních zemí). Commander = 100, po jedné.</div></div>
-      <div class="rule"><div class="rt">Jak vyhraješ</div><div class="rd">Soupeř na <b>0 životů</b>; nebo si má <b>líznout z prázdné knihovny</b> (prohrává až v ten okamžik, ne když dojde); nebo nasbírá <b>10 jedu</b>. V Commanderu i <b>21 bojového zranění od jednoho velitele</b>.</div></div>
-      <div class="rule"><div class="rt">Timing: instant × sorcery</div><div class="rd"><b>Sorcery</b> a tvory hraješ jen ve svém main phase. <b>Instanty</b> kdykoli, i v cizím tahu.</div></div>
-      <div class="rule"><div class="rt">Tapnuté = použité</div><div class="rd">Otočená karta je „spotřebovaná". Sama se nenarovná, čeká až na tvůj <b>untap</b> příští tah.</div></div>
-    </div>
-  </section>
-
-  <!-- MISTAKES -->
-  <section class="block" id="chyby">
-    <div class="eyebrow">Vyhni se jim</div>
-    <h2>Typické chyby začátečníka</h2>
-    <div class="miss">
-      <div class="m"><div class="bad"><span class="tag x">✕</span><span>Tapneš na svém tahu všechnu manu do sucha.</span></div><div class="fix"><span class="tag c">✓</span><span>Nech si manu i na soupeřův tah, ať můžeš zahrát <b>instant</b> nebo trik.</span></div></div>
-      <div class="m"><div class="bad"><span class="tag x">✕</span><span>Zaútočíš úplně vším a zůstaneš bez obrany.</span></div><div class="fix"><span class="tag c">✓</span><span>Nech si <b>blokery</b>, nebo spočítej, jestli tě soupeř v protiútoku nezabije.</span></div></div>
-      <div class="m"><div class="bad"><span class="tag x">✕</span><span>Zapomeneš na trigger v upkeepu nebo na „enters" efekt.</span></div><div class="fix"><span class="tag c">✓</span><span>Po líznutí projeď, co se ti <b>„na začátku"</b> a při vstupu tvorů spouští.</span></div></div>
-      <div class="m"><div class="bad"><span class="tag x">✕</span><span>Držíš ruku s 0–1 nebo 6–7 zeměmi.</span></div><div class="fix"><span class="tag c">✓</span><span>To je typický <b>mulligan</b>. Stojí tě jednu kartu, ale <b>vybíráš si, kterou</b> zasuneš dospodu. Neboj se ho vzít.</span></div></div>
-      <div class="m"><div class="bad"><span class="tag x">✕</span><span>Zapomeneš v tahu zahrát zemi.</span></div><div class="fix"><span class="tag c">✓</span><span>Land drop je zdarma zdroj many. <b>Hraj zemi každý tah</b>, jinak zaostáváš.</span></div></div>
-      <div class="m"><div class="bad"><span class="tag x">✕</span><span>Vysypeš na stůl vše a soupeř to smete jedním board wipe.</span></div><div class="fix"><span class="tag c">✓</span><span>Nech si <b>rezervu v ruce</b>, ať máš čím dohrát po hromadném zničení.</span></div></div>
-    </div>
-  </section>
-
-  <!-- HEARTHSTONE -->
-  <section class="block" id="hs">
-    <div class="eyebrow">Z jedné hry do druhé</div>
-    <h2>Z Hearthstonu do Magicu</h2>
-    <p class="lead">Hearthstone byl navržený jako zjednodušený Magic, takže máš v hlavě už spoustu konceptů. Tohle přenášíš zadarmo.</p>
-    <div class="maps">
-      <div class="map"><span class="hs">Mana Crystals</span><span class="arrow">→</span><span class="mtg">Lands<small>rostoucí mana</small></span></div>
-      <div class="map"><span class="hs">Minion</span><span class="arrow">→</span><span class="mtg">Creature<small>tvor</small></span></div>
-      <div class="map"><span class="hs">Attack / Health</span><span class="arrow">→</span><span class="mtg">Power / Toughness</span></div>
-      <div class="map"><span class="hs">Battlecry</span><span class="arrow">→</span><span class="mtg">ETB<small>„enters"</small></span></div>
-      <div class="map"><span class="hs">Deathrattle</span><span class="arrow">→</span><span class="mtg">„When this dies"</span></div>
-      <div class="map"><span class="hs">Lifesteal</span><span class="arrow">→</span><span class="mtg">Lifelink</span></div>
-      <div class="map"><span class="hs">Poisonous</span><span class="arrow">→</span><span class="mtg">Deathtouch</span></div>
-      <div class="map"><span class="hs">Charge</span><span class="arrow">→</span><span class="mtg">Haste</span></div>
-      <div class="map"><span class="hs">Spell</span><span class="arrow">→</span><span class="mtg">Instant / Sorcery</span></div>
-      <div class="map"><span class="hs">Secret</span><span class="arrow">→</span><span class="mtg">blízko instantu<small>ale hraješ aktivně</small></span></div>
-    </div>
-    <div class="eyebrow" style="margin-top:20px">Tři velké rozdíly</div>
-    <div class="diffs">
-      <div class="diff"><div class="dt">1 · Hraješ i v soupeřově tahu</div><div class="dd">V HS jen koukáš. V Magicu můžeš hrát <b>instanty a schopnosti jako reakci</b>, i v cizím tahu. Proto se často netapuješ do sucha a necháváš si manu. Tady je celá hloubka hry.</div></div>
-      <div class="diff"><div class="dt">2 · Blokuje obránce, ne útočník</div><div class="dd">V HS si vybereš cíl útoku sám. V Magicu <b>útočíš na hráče a soupeř se rozhodne, čím zablokuje</b>. A pozor: <b>Taunt defaultně není</b>, nikdo tě nenutí blokovat konkrétního tvora.</div></div>
-      <div class="diff"><div class="dt">3 · Mana chodí z landů, které lízneš</div><div class="dd">V HS máš manu zaručenou. V MTG je ~40 % balíčku landy a občas jich lízneš málo (mana screw) nebo moc (flood). Ta náhoda k Magicu patří.</div></div>
-    </div>
-  </section>
-
-  <!-- FORMATS -->
-  <section class="block" id="formaty">
-    <div class="eyebrow">Kde se vlastně hraje</div>
-    <h2>Formáty</h2>
-    <p class="lead">Pravidla jsou všude stejná. Liší se, jak velký balíček si stavíš a s kolika lidmi sedíš u stolu.</p>
-    <div class="rules">
-      <div class="rule"><div class="rt">Commander <span class="cz">(EDH)</span></div><div class="rd">Nejoblíbenější způsob, jak hrát s kamarády. Přesně <b>100 karet</b>, od každé <b>jen jedna</b> (základních zemí kolik chceš), <b>40 životů</b> a legendární tvor jako velitel. Dá-li ti jeden velitel <b>21 bojového zranění</b>, prohráváš.</div></div>
-      <div class="rule"><div class="rt">Standard a konstruktované</div><div class="rd">Balíček stavíš doma z vlastních karet. Minimálně <b>60 karet</b>, nejvýš <b>4 kopie</b> od jedné (kromě základních zemí), plus <b>sideboard do 15 karet</b>.</div></div>
-      <div class="rule"><div class="rt">Draft a Limited</div><div class="rd">Přijdeš s prázdnýma rukama. Otevíráš boostery, karty si posíláš dokola a z nachytaného stavíš balíček o <b>minimálně 40 kartách</b>. Nejlevnější způsob, jak si zahrát.</div></div>
-      <div class="rule"><div class="rt">MTG Arena</div><div class="rd">Digitální Magic zdarma. Pravidla, zásobník i priority hlídá klient za tebe, takže je to <b>nejmírnější způsob, jak se hru naučit</b>.</div></div>
-    </div>
-  </section>
-
-  <!-- FIRST DECK -->
-  <section class="block" id="balicek">
-    <div class="eyebrow">Praktické</div>
-    <h2>Tvůj první balíček</h2>
-    <p class="lead">Nestav ho od nuly. Začni s hotovým a měň v něm po jedné kartě, ať vidíš, co která dělá.</p>
-    <div class="steps3">
-      <div class="s3"><div class="num">1</div><div class="st">Kup precon <span>hotový balíček</span></div><div class="sd">Krabice, ze které se dá hrát rovnou. Je vyladěná na počet zemí i křivku, takže tě nic nepřekvapí.</div></div>
-      <div class="s3"><div class="num">2</div><div class="st">Drž jednu až dvě barvy <span>ne pět</span></div><div class="sd">Čím víc barev, tím častěji <b>nemáš tu správnou manu</b>. Nováčkovi stačí jedna barva, dvě jsou příjemný strop.</div></div>
-      <div class="s3"><div class="num">3</div><div class="st">Počítej země <span>a hlídej křivku</span></div><div class="sd">Zemí má být zhruba <b>40 % balíčku</b>. Křivka znamená mít dost levných karet, ať máš co dělat i ve druhém a třetím tahu.</div></div>
-    </div>
-    <div class="maps">
-      <div class="map"><span class="hs">60 karet (konstruktované)</span><span class="arrow">→</span><span class="mtg">~24 zemí<small>zbytek kouzla a tvorové</small></span></div>
-      <div class="map"><span class="hs">40 karet (draft)</span><span class="arrow">→</span><span class="mtg">17 zemí<small>osvědčený standard</small></span></div>
-    </div>
-    <div class="callout"><b>Pravidlo palce:</b> když nevíš, dej do balíčku <b>o jednu zemi víc</b>, než ti přijde správné. Nelíznout druhou zemi bolí mnohem víc než líznout ji o kolo později.</div>
-  </section>
-
-  <!-- GLOSSARY -->
-  <section class="block" id="slovnik">
-    <div class="eyebrow">Vyhledávatelný</div>
-    <h2>Slovník pojmů</h2>
-    <p class="lead">Anglický termín, český význam, příklad. Napiš do hledání a hned to najde.</p>
-    <div class="search">
-      <span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></span>
-      <input id="q" type="text" placeholder="Hledej: flying, obětovat, ramp, hřbitov…" autocomplete="off" aria-label="Hledat pojem">
-    </div>
-    <div class="chips" id="chips"><button class="chip active" data-cat="all" aria-pressed="true">Vše</button><button class="chip" data-cat="souboj" aria-pressed="false">Souboj</button><button class="chip" data-cat="ochrana" aria-pressed="false">Ochrana</button><button class="chip" data-cat="akce" aria-pressed="false">Akce</button><button class="chip" data-cat="typy" aria-pressed="false">Typy karet</button><button class="chip" data-cat="zony" aria-pressed="false">Zóny</button><button class="chip" data-cat="symboly" aria-pressed="false">Symboly</button><button class="chip" data-cat="pravidla" aria-pressed="false">Pravidla hry</button><button class="chip" data-cat="slang" aria-pressed="false">Slang u stolu</button></div>
-    <div id="content">
-      <div class="gsec" data-cat="souboj"><div class="gsec-head"><h3>Souboj</h3><span class="count" aria-label="11 pojmů">11</span></div><div class="grid"><div class="card" data-s="flying létání můžou ho blokovat jen tvorové s flying nebo reach. soupeř bez létajícího tvora ho nezastaví."><div class="top"><span class="term" lang="en">Flying</span><span class="cz">Létání</span></div><div class="def">Můžou ho blokovat jen tvorové s Flying nebo Reach.</div><div class="ex">Soupeř bez létajícího tvora ho nezastaví.</div></div><div class="card" data-s="reach dosah sám nelétá, ale smí blokovat létající tvory. pavouk s reach zablokuje draka."><div class="top"><span class="term" lang="en">Reach</span><span class="cz">Dosah</span></div><div class="def">Sám nelétá, ale smí blokovat létající tvory.</div><div class="ex">Pavouk s Reach zablokuje draka.</div></div><div class="card" data-s="trample přesah přebytečné zranění nad odolnost blokera jde soupeři do životů. 5/5 blokovaný 2/2 → 3 rány jdou hráči."><div class="top"><span class="term" lang="en">Trample</span><span class="cz">Přesah</span></div><div class="def">Přebytečné zranění nad odolnost blokera jde soupeři do životů.</div><div class="ex">5/5 blokovaný 2/2 → 3 rány jdou hráči.</div></div><div class="card" data-s="first strike první úder uštědří bojové zranění dřív než tvorové bez něj. zabije blokera dřív, než ten stihne udeřit."><div class="top"><span class="term" lang="en">First strike</span><span class="cz">První úder</span></div><div class="def">Uštědří bojové zranění dřív než tvorové bez něj.</div><div class="ex">Zabije blokera dřív, než ten stihne udeřit.</div></div><div class="card" data-s="double strike dvojitý úder zraňuje dvakrát: v kroku prvního úderu i v normálním. 3/3 fakticky rozdá 6 zranění."><div class="top"><span class="term" lang="en">Double strike</span><span class="cz">Dvojitý úder</span></div><div class="def">Zraňuje dvakrát: v kroku prvního úderu i v normálním.</div><div class="ex">3/3 fakticky rozdá 6 zranění.</div></div><div class="card" data-s="deathtouch smrtící dotek jakékoli zranění od něj stačí tvora zabít. 1/1 s deathtouch zabije 8/8."><div class="top"><span class="term" lang="en">Deathtouch</span><span class="cz">Smrtící dotek</span></div><div class="def">Jakékoli zranění od něj stačí tvora zabít.</div><div class="ex">1/1 s Deathtouch zabije 8/8.</div></div><div class="card" data-s="lifelink sání života kolik zranění uštědří, tolik životů získáš. 3/3 udeří → +3 životy pro tebe."><div class="top"><span class="term" lang="en">Lifelink</span><span class="cz">Sání života</span></div><div class="def">Kolik zranění uštědří, tolik životů získáš.</div><div class="ex">3/3 udeří → +3 životy pro tebe.</div></div><div class="card" data-s="vigilance bdělost při útoku se netapuje, takže může i blokovat. útočí a přesto hlídá obranu."><div class="top"><span class="term" lang="en">Vigilance</span><span class="cz">Bdělost</span></div><div class="def">Při útoku se netapuje, takže může i blokovat.</div><div class="ex">Útočí a přesto hlídá obranu.</div></div><div class="card" data-s="menace hrozba nesmí ho blokovat méně než dva tvorové. proti jednomu blokerovi vždy projde."><div class="top"><span class="term" lang="en">Menace</span><span class="cz">Hrozba</span></div><div class="def">Nesmí ho blokovat méně než dva tvorové.</div><div class="ex">Proti jednomu blokerovi vždy projde.</div></div><div class="card" data-s="haste rychlost může útočit a tapovat hned v tahu, kdy přijde. obchází „summoning sickness&quot;."><div class="top"><span class="term" lang="en">Haste</span><span class="cz">Rychlost</span></div><div class="def">Může útočit a tapovat hned v tahu, kdy přijde.</div><div class="ex">Obchází „summoning sickness".</div></div><div class="card" data-s="defender obránce nemůže útočit, jen blokuje. bývá to zeď. skvělá levná obrana v prvních tazích."><div class="top"><span class="term" lang="en">Defender</span><span class="cz">Obránce</span></div><div class="def">Nemůže útočit, jen blokuje. Bývá to zeď.</div><div class="ex">Skvělá levná obrana v prvních tazích.</div></div></div></div>
-      <div class="gsec" data-cat="ochrana"><div class="gsec-head"><h3>Ochrana</h3><span class="count" aria-label="5 pojmů">5</span></div><div class="grid"><div class="card" data-s="hexproof (neomylnost) soupeř ho nemůže zacílit kouzly ani schopnostmi. jeho odstraňovací kouzlo na něj „nezabere&quot;."><div class="top"><span class="term" lang="en">Hexproof</span><span class="cz">(neomylnost)</span></div><div class="def">Soupeř ho nemůže zacílit kouzly ani schopnostmi.</div><div class="ex">Jeho odstraňovací kouzlo na něj „nezabere".</div></div><div class="card" data-s="ward (stráž) chce-li ho soupeř zacílit, musí zaplatit navíc, jinak se to zruší. ward 2 = soupeř doplatí 2 many."><div class="top"><span class="term" lang="en">Ward</span><span class="cz">(stráž)</span></div><div class="def">Chce-li ho soupeř zacílit, musí zaplatit navíc, jinak se to zruší.</div><div class="ex">Ward 2 = soupeř doplatí 2 many.</div></div><div class="card" data-s="indestructible nezničitelný nezničí ho zranění ani efekty „destroy&quot;. (vyhnat/vrátit lze.) přežije boj i „znič cílového tvora&quot;."><div class="top"><span class="term" lang="en">Indestructible</span><span class="cz">Nezničitelný</span></div><div class="def">Nezničí ho zranění ani efekty „destroy". (Vyhnat/vrátit lze.)</div><div class="ex">Přežije boj i „znič cílového tvora".</div></div><div class="card" data-s="flash záblesk smíš to zahrát kdykoli, i v soupeřově tahu (jako instant). vytáhneš tvora jako překvapení v bloku."><div class="top"><span class="term" lang="en">Flash</span><span class="cz">Záblesk</span></div><div class="def">Smíš to zahrát kdykoli, i v soupeřově tahu (jako instant).</div><div class="ex">Vytáhneš tvora jako překvapení v bloku.</div></div><div class="card" data-s="protection ochrana před… nedá se to danou barvou zranit, zacílit, zablokovat ani na to připnout. „protection from red&quot; ignoruje červené kouzlo."><div class="top"><span class="term" lang="en">Protection</span><span class="cz">Ochrana před…</span></div><div class="def">Nedá se to danou barvou zranit, zacílit, zablokovat ani na to připnout.</div><div class="ex">„Protection from red" ignoruje červené kouzlo.</div></div></div></div>
-      <div class="gsec" data-cat="akce"><div class="gsec-head"><h3>Akce</h3><span class="count" aria-label="13 pojmů">13</span></div><div class="grid"><div class="card" data-s="tap / untap tapnout / narovnat tap = otočíš na bok při použití. untap = narovnáš na začátku tahu. tapnutý land nedá manu, dokud se nenarovná."><div class="top"><span class="term" lang="en">Tap / Untap</span><span class="cz">Tapnout / Narovnat</span></div><div class="def">Tap = otočíš na bok při použití. Untap = narovnáš na začátku tahu.</div><div class="ex">Tapnutý land nedá manu, dokud se nenarovná.</div></div><div class="card" data-s="draw líznout vezmeš si vrchní kartu knihovny do ruky. „draw a card&quot; = líznutí navíc."><div class="top"><span class="term" lang="en">Draw</span><span class="cz">Líznout</span></div><div class="def">Vezmeš si vrchní kartu knihovny do ruky.</div><div class="ex">„Draw a card" = líznutí navíc.</div></div><div class="card" data-s="discard odhodit pošleš kartu z ruky na hřbitov. nad 7 karet na konci tahu odhazuješ."><div class="top"><span class="term" lang="en">Discard</span><span class="cz">Odhodit</span></div><div class="def">Pošleš kartu z ruky na hřbitov.</div><div class="ex">Nad 7 karet na konci tahu odhazuješ.</div></div><div class="card" data-s="sacrifice obětovat pošleš svůj vlastní permanent na hřbitov jako cenu. nejde tomu zabránit ani to „protikouzlit&quot;."><div class="top"><span class="term" lang="en">Sacrifice</span><span class="cz">Obětovat</span></div><div class="def">Pošleš svůj vlastní permanent na hřbitov jako cenu.</div><div class="ex">Nejde tomu zabránit ani to „protikouzlit".</div></div><div class="card" data-s="destroy zničit pošle permanent na hřbitov. zastaví to indestructible. „destroy target creature&quot;."><div class="top"><span class="term" lang="en">Destroy</span><span class="cz">Zničit</span></div><div class="def">Pošle permanent na hřbitov. Zastaví to Indestructible.</div><div class="ex">„Destroy target creature".</div></div><div class="card" data-s="exile vyhnat odloží kartu do vyhnanství, ne na hřbitov. nejhůř se vrací. silnější odstranění než destroy."><div class="top"><span class="term" lang="en">Exile</span><span class="cz">Vyhnat</span></div><div class="def">Odloží kartu do vyhnanství, ne na hřbitov. Nejhůř se vrací.</div><div class="ex">Silnější odstranění než destroy.</div></div><div class="card" data-s="counter zrušit / protikouzlit zruší kouzlo v zásobníku dřív, než zapůsobí. „counter target spell&quot;."><div class="top"><span class="term" lang="en">Counter</span><span class="cz">Zrušit / Protikouzlit</span></div><div class="def">Zruší kouzlo v zásobníku dřív, než zapůsobí.</div><div class="ex">„Counter target spell".</div></div><div class="card" data-s="return to hand vrátit do ruky (bounce) vrátí permanent majiteli do ruky. dočasné řešení, tvor se dá zahrát znovu."><div class="top"><span class="term" lang="en">Return to hand</span><span class="cz">Vrátit do ruky (bounce)</span></div><div class="def">Vrátí permanent majiteli do ruky.</div><div class="ex">Dočasné řešení, tvor se dá zahrát znovu.</div></div><div class="card" data-s="mill mlít přesune karty z vrchu knihovny rovnou na hřbitov. alternativní cesta k výhře: soupeři dojdou karty."><div class="top"><span class="term" lang="en">Mill</span><span class="cz">Mlít</span></div><div class="def">Přesune karty z vrchu knihovny rovnou na hřbitov.</div><div class="ex">Alternativní cesta k výhře: soupeři dojdou karty.</div></div><div class="card" data-s="scry věštit koukneš na vrchní karty a nechtěné dáš pod balíček. scry 2 = filtruješ dvě karty."><div class="top"><span class="term" lang="en">Scry</span><span class="cz">Věštit</span></div><div class="def">Koukneš na vrchní karty a nechtěné dáš pod balíček.</div><div class="ex">Scry 2 = filtruješ dvě karty.</div></div><div class="card" data-s="etb když vstoupí na bojiště efekt se spustí ve chvíli, kdy permanent přijde do hry. „when ~ enters, draw a card.&quot;"><div class="top"><span class="term" lang="en">ETB</span><span class="cz">Když vstoupí na bojiště</span></div><div class="def">Efekt se spustí ve chvíli, kdy permanent přijde do hry.</div><div class="ex">„When ~ enters, draw a card."</div></div><div class="card" data-s="+1/+1 counter žeton +1/+1 značka, která trvale zvyšuje sílu a odolnost tvora. 2/2 se dvěma žetony je 4/4."><div class="top"><span class="term" lang="en">+1/+1 counter</span><span class="cz">Žeton +1/+1</span></div><div class="def">Značka, která trvale zvyšuje sílu a odolnost tvora.</div><div class="ex">2/2 se dvěma žetony je 4/4.</div></div><div class="card" data-s="fight souboj (mimo boj) dva tvorové si navzájem uštědří zranění rovné své síle. zelený trik: velký tvor zabije malého."><div class="top"><span class="term" lang="en">Fight</span><span class="cz">Souboj (mimo boj)</span></div><div class="def">Dva tvorové si navzájem uštědří zranění rovné své síle.</div><div class="ex">Zelený trik: velký tvor zabije malého.</div></div></div></div>
-      <div class="gsec" data-cat="typy"><div class="gsec-head"><h3>Typy karet</h3><span class="count" aria-label="9 pojmů">9</span></div><div class="grid"><div class="card" data-s="land země zdroj many. jeden za tah. není to kouzlo. základ tvého rozpočtu na kolo."><div class="top"><span class="term" lang="en">Land</span><span class="cz">Země</span></div><div class="def">Zdroj many. Jeden za tah. Není to kouzlo.</div><div class="ex">Základ tvého rozpočtu na kolo.</div></div><div class="card" data-s="creature tvor zůstává na stole, útočí a blokuje. má sílu/odolnost. číslo vlevo = síla, vpravo = odolnost."><div class="top"><span class="term" lang="en">Creature</span><span class="cz">Tvor</span></div><div class="def">Zůstává na stole, útočí a blokuje. Má sílu/odolnost.</div><div class="ex">Číslo vlevo = síla, vpravo = odolnost.</div></div><div class="card" data-s="instant rychlé kouzlo zahraješ kdykoli, i v soupeřově tahu. ideální jako reakce."><div class="top"><span class="term" lang="en">Instant</span><span class="cz">Rychlé kouzlo</span></div><div class="def">Zahraješ kdykoli, i v soupeřově tahu.</div><div class="ex">Ideální jako reakce.</div></div><div class="card" data-s="sorcery čarování jen ve tvém main phase, když je zásobník prázdný. nemůžeš ho hrát „v reakci&quot;."><div class="top"><span class="term" lang="en">Sorcery</span><span class="cz">Čarování</span></div><div class="def">Jen ve tvém main phase, když je zásobník prázdný.</div><div class="ex">Nemůžeš ho hrát „v reakci".</div></div><div class="card" data-s="artifact artefakt trvalá karta, obvykle bezbarvá, s různými efekty. např. předmět dávající manu."><div class="top"><span class="term" lang="en">Artifact</span><span class="cz">Artefakt</span></div><div class="def">Trvalá karta, obvykle bezbarvá, s různými efekty.</div><div class="ex">Např. předmět dávající manu.</div></div><div class="card" data-s="enchantment kouzlo (trvalé) trvalý efekt, co zůstává ve hře. aura se připne k něčemu. aura na tvorovi mu třeba dá +2/+2."><div class="top"><span class="term" lang="en">Enchantment</span><span class="cz">Kouzlo (trvalé)</span></div><div class="def">Trvalý efekt, co zůstává ve hře. Aura se připne k něčemu.</div><div class="ex">Aura na tvorovi mu třeba dá +2/+2.</div></div><div class="card" data-s="planeswalker planeswalker spojenec s věrností a schopnostmi. jedna schopnost za tah. soupeř na něj může i útočit."><div class="top"><span class="term" lang="en">Planeswalker</span><span class="cz">Planeswalker</span></div><div class="def">Spojenec s věrností a schopnostmi. Jedna schopnost za tah.</div><div class="ex">Soupeř na něj může i útočit.</div></div><div class="card" data-s="token žeton tvor/permanent vytvořený efektem, není to skutečná karta. „create a 1/1 soldier.&quot;"><div class="top"><span class="term" lang="en">Token</span><span class="cz">Žeton</span></div><div class="def">Tvor/permanent vytvořený efektem, není to skutečná karta.</div><div class="ex">„Create a 1/1 Soldier."</div></div><div class="card" data-s="basic land základní země plains, island, swamp, mountain, forest. jediné, kterých smíš mít neomezeně. páteř tvé many."><div class="top"><span class="term" lang="en">Basic land</span><span class="cz">Základní země</span></div><div class="def">Plains, Island, Swamp, Mountain, Forest. Jediné, kterých smíš mít neomezeně.</div><div class="ex">Páteř tvé many.</div></div></div></div>
-      <div class="gsec" data-cat="zony"><div class="gsec-head"><h3>Zóny</h3><span class="count" aria-label="6 pojmů">6</span></div><div class="grid"><div class="card" data-s="library knihovna tvůj balíček lícem dolů, ze kterého líznuješ. prohraješ až ve chvíli, kdy si z ní máš líznout."><div class="top"><span class="term" lang="en">Library</span><span class="cz">Knihovna</span></div><div class="def">Tvůj balíček lícem dolů, ze kterého líznuješ.</div><div class="ex">Prohraješ až ve chvíli, kdy si z ní máš líznout.</div></div><div class="card" data-s="hand ruka karty, co držíš. na konci tahu max 7. skrytá informace před soupeřem."><div class="top"><span class="term" lang="en">Hand</span><span class="cz">Ruka</span></div><div class="def">Karty, co držíš. Na konci tahu max 7.</div><div class="ex">Skrytá informace před soupeřem.</div></div><div class="card" data-s="battlefield bojiště kde žijí permanenty ve hře (landy, tvorové…). společné pro všechny hráče."><div class="top"><span class="term" lang="en">Battlefield</span><span class="cz">Bojiště</span></div><div class="def">Kde žijí permanenty ve hře (landy, tvorové…).</div><div class="ex">Společné pro všechny hráče.</div></div><div class="card" data-s="graveyard hřbitov odhozené a mrtvé karty, lícem nahoru. některá kouzla odsud recyklují."><div class="top"><span class="term" lang="en">Graveyard</span><span class="cz">Hřbitov</span></div><div class="def">Odhozené a mrtvé karty, lícem nahoru.</div><div class="ex">Některá kouzla odsud recyklují.</div></div><div class="card" data-s="exile vyhnanství karty „mimo hru&quot;. nejtěžší zóna na návrat. silnější než hřbitov."><div class="top"><span class="term" lang="en">Exile</span><span class="cz">Vyhnanství</span></div><div class="def">Karty „mimo hru". Nejtěžší zóna na návrat.</div><div class="ex">Silnější než hřbitov.</div></div><div class="card" data-s="stack zásobník kde čekají kouzla na vyhodnocení. poslední dovnitř = první ven. tady se dá reagovat a protikouzlit."><div class="top"><span class="term" lang="en">Stack</span><span class="cz">Zásobník</span></div><div class="def">Kde čekají kouzla na vyhodnocení. Poslední dovnitř = první ven.</div><div class="ex">Tady se dá reagovat a protikouzlit.</div></div></div></div>
-      <div class="gsec" data-cat="symboly"><div class="gsec-head"><h3>Symboly</h3><span class="count" aria-label="7 pojmů">7</span></div><div class="grid"><div class="card" data-s="{w}{u}{b}{r}{g} barevná mana bílá, modrá, černá, červená, zelená. musíš zaplatit přesně tu barvu. {u} = jedna modrá mana."><div class="top"><span class="term" lang="en">{W}{U}{B}{R}{G}</span><span class="cz">Barevná mana</span></div><div class="def">Bílá, modrá, černá, červená, zelená. Musíš zaplatit přesně tu barvu.</div><div class="ex">{U} = jedna modrá mana.</div></div><div class="card" data-s="{1} {2} {3}… obecná mana číslo = tolik many jakékoli barvy. {3} zaplatíš čímkoli, klidně třemi lesy."><div class="top"><span class="term" lang="en">{1} {2} {3}…</span><span class="cz">Obecná mana</span></div><div class="def">Číslo = tolik many jakékoli barvy.</div><div class="ex">{3} zaplatíš čímkoli, klidně třemi lesy.</div></div><div class="card" data-s="{c} bezbarvá mana konkrétní bezbarvá mana, ne totéž co obecná. dávají ji některé speciální země."><div class="top"><span class="term" lang="en">{C}</span><span class="cz">Bezbarvá mana</span></div><div class="def">Konkrétní bezbarvá mana, ne totéž co obecná.</div><div class="ex">Dávají ji některé speciální země.</div></div><div class="card" data-s="{t} tap symbol „tapni tuto kartu&quot; jako součást ceny schopnosti. {t}: přidej jednu manu."><div class="top"><span class="term" lang="en">{T}</span><span class="cz">Tap symbol</span></div><div class="def">„Tapni tuto kartu" jako součást ceny schopnosti.</div><div class="ex">{T}: přidej jednu manu.</div></div><div class="card" data-s="{x} proměnná kolik many do x vložíš, taková je síla efektu. x = 4 → čtyři žetony nebo 4 zranění."><div class="top"><span class="term" lang="en">{X}</span><span class="cz">Proměnná</span></div><div class="def">Kolik many do X vložíš, taková je síla efektu.</div><div class="ex">X = 4 → čtyři žetony nebo 4 zranění.</div></div><div class="card" data-s="loyalty věrnost číslo v rohu planeswalkera. jeho schopnosti ho zvyšují/snižují. klesne na 0 = planeswalker umře."><div class="top"><span class="term" lang="en">Loyalty</span><span class="cz">Věrnost</span></div><div class="def">Číslo v rohu planeswalkera. Jeho schopnosti ho zvyšují/snižují.</div><div class="ex">Klesne na 0 = planeswalker umře.</div></div><div class="card" data-s="mana value celková cena součet všech symbolů v ceně. určuje, jak „drahá&quot; karta je. {2}{u} má mana value 3."><div class="top"><span class="term" lang="en">Mana value</span><span class="cz">Celková cena</span></div><div class="def">Součet všech symbolů v ceně. Určuje, jak „drahá" karta je.</div><div class="ex">{2}{U} má mana value 3.</div></div></div></div>
-      <div class="gsec" data-cat="pravidla"><div class="gsec-head"><h3>Pravidla hry</h3><span class="count" aria-label="10 pojmů">10</span></div><div class="grid"><div class="card" data-s="priority priorita právo zahrát kouzlo nebo schopnost. aktivní hráč ji dostává první, pak soupeř. bez priority nemůžeš reagovat ani protikouzlit."><div class="top"><span class="term" lang="en">Priority</span><span class="cz">Priorita</span></div><div class="def">Právo zahrát kouzlo nebo schopnost. Aktivní hráč ji dostává první, pak soupeř.</div><div class="ex">Bez priority nemůžeš reagovat ani protikouzlit.</div></div><div class="card" data-s="mulligan mulligan zamícháš ruku zpět, lízneš znovu sedm a pak zasuneš pod balíček tolik karet, kolikátý mulligan to byl. po druhém mulliganu si z líznuté sedmičky necháváš pět."><div class="top"><span class="term" lang="en">Mulligan</span><span class="cz">Mulligan</span></div><div class="def">Zamícháš ruku zpět, lízneš znovu sedm a pak zasuneš pod balíček tolik karet, kolikátý mulligan to byl.</div><div class="ex">Po druhém mulliganu si z líznuté sedmičky necháváš pět.</div></div><div class="card" data-s="state-based actions stavově vynucené akce úklid, který hra dělá sama, kdykoli by měl někdo dostat prioritu. nikdo to nehraje a nejde na to reagovat. tvor s odolností 0 umře sám od sebe."><div class="top"><span class="term" lang="en">State-based actions</span><span class="cz">Stavově vynucené akce</span></div><div class="def">Úklid, který hra dělá sama, kdykoli by měl někdo dostat prioritu. Nikdo to nehraje a nejde na to reagovat.</div><div class="ex">Tvor s odolností 0 umře sám od sebe.</div></div><div class="card" data-s="summoning sickness přivolávací nemoc tvor nemůže útočit ani použít schopnost s tapnutím v tahu, kdy přišel na bojiště. obchází to haste."><div class="top"><span class="term" lang="en">Summoning sickness</span><span class="cz">Přivolávací nemoc</span></div><div class="def">Tvor nemůže útočit ani použít schopnost s tapnutím v tahu, kdy přišel na bojiště.</div><div class="ex">Obchází to Haste.</div></div><div class="card" data-s="legendary rule pravidlo legend máš-li dva legendární permanenty stejného jména, jeden si necháš a druhý jde na hřbitov. týká se jen tvých vlastních, ne soupeřových."><div class="top"><span class="term" lang="en">Legendary rule</span><span class="cz">Pravidlo legend</span></div><div class="def">Máš-li dva legendární permanenty stejného jména, jeden si necháš a druhý jde na hřbitov.</div><div class="ex">Týká se jen tvých vlastních, ne soupeřových.</div></div><div class="card" data-s="singleton od každé jen jedna balíček nesmí mít dvě karty stejného jména. základních zemí smíš mít kolik chceš. takhle je postavený každý commander balíček."><div class="top"><span class="term" lang="en">Singleton</span><span class="cz">Od každé jen jedna</span></div><div class="def">Balíček nesmí mít dvě karty stejného jména. Základních zemí smíš mít kolik chceš.</div><div class="ex">Takhle je postavený každý Commander balíček.</div></div><div class="card" data-s="sideboard postranní balíček až patnáct karet stranou. mezi hrami zápasu je smíš vyměnit za karty v balíčku. v draftu je sideboardem všechno, cos otevřel."><div class="top"><span class="term" lang="en">Sideboard</span><span class="cz">Postranní balíček</span></div><div class="def">Až patnáct karet stranou. Mezi hrami zápasu je smíš vyměnit za karty v balíčku.</div><div class="ex">V draftu je sideboardem všechno, cos otevřel.</div></div><div class="card" data-s="poison jed deset jedovatých žetonů znamená prohru, bez ohledu na to, kolik máš životů. alternativní cesta, jak tě dostat."><div class="top"><span class="term" lang="en">Poison</span><span class="cz">Jed</span></div><div class="def">Deset jedovatých žetonů znamená prohru, bez ohledu na to, kolik máš životů.</div><div class="ex">Alternativní cesta, jak tě dostat.</div></div><div class="card" data-s="commander velitel legendární tvor, který ti začíná stranou a smíš ho hrát opakovaně. dá 21 bojového zranění a soupeř prohrál. určuje, jaké barvy smíš mít v balíčku."><div class="top"><span class="term" lang="en">Commander</span><span class="cz">Velitel</span></div><div class="def">Legendární tvor, který ti začíná stranou a smíš ho hrát opakovaně. Dá 21 bojového zranění a soupeř prohrál.</div><div class="ex">Určuje, jaké barvy smíš mít v balíčku.</div></div><div class="card" data-s="mana screw / flood málo / moc zemí nelízl jsi dost zemí, nebo naopak skoro nic jiného. nejčastější důvod, proč hra utekla bez tebe."><div class="top"><span class="term" lang="en">Mana screw / flood</span><span class="cz">Málo / moc zemí</span></div><div class="def">Nelízl jsi dost zemí, nebo naopak skoro nic jiného.</div><div class="ex">Nejčastější důvod, proč hra utekla bez tebe.</div></div></div></div>
-      <div class="gsec" data-cat="slang"><div class="gsec-head"><h3>Slang u stolu</h3><span class="count" aria-label="20 pojmů">20</span></div><div class="grid"><div class="card" data-s="removal odstranění kouzlo, co zabije nebo vyhodí soupeřova tvora. „máš na to removal?&quot;"><div class="top"><span class="term" lang="en">Removal</span><span class="cz">Odstranění</span></div><div class="def">Kouzlo, co zabije nebo vyhodí soupeřova tvora.</div><div class="ex">„Máš na to removal?"</div></div><div class="card" data-s="spot removal cílené odstranění odstranění jednoho konkrétního tvora. opak plošného sweeperu."><div class="top"><span class="term" lang="en">Spot removal</span><span class="cz">Cílené odstranění</span></div><div class="def">Odstranění jednoho konkrétního tvora.</div><div class="ex">Opak plošného sweeperu.</div></div><div class="card" data-s="board wipe / sweeper plošné zničení zničí všechny (nebo mnoho) tvorů naráz. restart stolu, když prohráváš na desce."><div class="top"><span class="term" lang="en">Board wipe / Sweeper</span><span class="cz">Plošné zničení</span></div><div class="def">Zničí všechny (nebo mnoho) tvorů naráz.</div><div class="ex">Restart stolu, když prohráváš na desce.</div></div><div class="card" data-s="ramp zrychlení many karty, co ti dají víc many dřív. zelená tím proslula."><div class="top"><span class="term" lang="en">Ramp</span><span class="cz">Zrychlení many</span></div><div class="def">Karty, co ti dají víc many dřív.</div><div class="ex">Zelená tím proslula.</div></div><div class="card" data-s="bomb bomba extrémně silná karta, co sama vyhrává hry. to, co chceš líznout."><div class="top"><span class="term" lang="en">Bomb</span><span class="cz">Bomba</span></div><div class="def">Extrémně silná karta, co sama vyhrává hry.</div><div class="ex">To, co chceš líznout.</div></div><div class="card" data-s="tempo tempo kdo diktuje dění na stole a nutí soupeře reagovat. „získal jsem tempo.&quot;"><div class="top"><span class="term" lang="en">Tempo</span><span class="cz">Tempo</span></div><div class="def">Kdo diktuje dění na stole a nutí soupeře reagovat.</div><div class="ex">„Získal jsem tempo."</div></div><div class="card" data-s="card advantage karetní výhoda mít víc karet a zdrojů než soupeř. dvě karty za jednu jeho."><div class="top"><span class="term" lang="en">Card advantage</span><span class="cz">Karetní výhoda</span></div><div class="def">Mít víc karet a zdrojů než soupeř.</div><div class="ex">Dvě karty za jednu jeho.</div></div><div class="card" data-s="curve / mana curve manová křivka rozložení cen karet v balíčku od levných po drahé. „hrál jsem přesně na křivku.&quot;"><div class="top"><span class="term" lang="en">Curve / Mana curve</span><span class="cz">Manová křivka</span></div><div class="def">Rozložení cen karet v balíčku od levných po drahé.</div><div class="ex">„Hrál jsem přesně na křivku."</div></div><div class="card" data-s="aggro agro balíček rychlý, útočný styl. chce zabít brzy. levní agresivní tvorové."><div class="top"><span class="term" lang="en">Aggro</span><span class="cz">Agro balíček</span></div><div class="def">Rychlý, útočný styl. Chce zabít brzy.</div><div class="ex">Levní agresivní tvorové.</div></div><div class="card" data-s="control kontrolní balíček zdržuje, ruší a vyhrává až v pozdní hře. counter + board wipe + bomba."><div class="top"><span class="term" lang="en">Control</span><span class="cz">Kontrolní balíček</span></div><div class="def">Zdržuje, ruší a vyhrává až v pozdní hře.</div><div class="ex">Counter + board wipe + bomba.</div></div><div class="card" data-s="midrange midrange vyvážený styl mezi agrem a kontrolou. solidní tvorové + trocha removalu."><div class="top"><span class="term" lang="en">Midrange</span><span class="cz">Midrange</span></div><div class="def">Vyvážený styl mezi agrem a kontrolou.</div><div class="ex">Solidní tvorové + trocha removalu.</div></div><div class="card" data-s="evasion průnik obranou schopnosti, díky kterým tvor projde blokem. flying, menace, „can't be blocked&quot;."><div class="top"><span class="term" lang="en">Evasion</span><span class="cz">Průnik obranou</span></div><div class="def">Schopnosti, díky kterým tvor projde blokem.</div><div class="ex">Flying, Menace, „can't be blocked".</div></div><div class="card" data-s="pump posílení dočasné zvýšení síly/odolnosti tvora. „pumpnu ho o +3/+3.&quot;"><div class="top"><span class="term" lang="en">Pump</span><span class="cz">Posílení</span></div><div class="def">Dočasné zvýšení síly/odolnosti tvora.</div><div class="ex">„Pumpnu ho o +3/+3."</div></div><div class="card" data-s="tutor / fetch vyhledání prohledáš knihovnu a vytáhneš si konkrétní kartu. najdeš přesně tu bombu."><div class="top"><span class="term" lang="en">Tutor / Fetch</span><span class="cz">Vyhledání</span></div><div class="def">Prohledáš knihovnu a vytáhneš si konkrétní kartu.</div><div class="ex">Najdeš přesně tu bombu.</div></div><div class="card" data-s="top-deck líznutí z vrchu lízneš přesně tu kartu, co jsi potřeboval. „top-deckl jsem removal, pecka.&quot;"><div class="top"><span class="term" lang="en">Top-deck</span><span class="cz">Líznutí z vrchu</span></div><div class="def">Lízneš přesně tu kartu, co jsi potřeboval.</div><div class="ex">„Top-deckl jsem removal, pecka."</div></div><div class="card" data-s="precon hotový balíček předpřipravený balíček z krabice, hratelný rovnou. ideální start pro nováčka."><div class="top"><span class="term" lang="en">Precon</span><span class="cz">Hotový balíček</span></div><div class="def">Předpřipravený balíček z krabice, hratelný rovnou.</div><div class="ex">Ideální start pro nováčka.</div></div><div class="card" data-s="cantrip kouzlo s líznutím levné kouzlo, které ti při zahrání rovnou lízne kartu, takže tě „nestojí&quot; kartu. balíček s nimi drží tempo líznutí."><div class="top"><span class="term" lang="en">Cantrip</span><span class="cz">Kouzlo s líznutím</span></div><div class="def">Levné kouzlo, které ti při zahrání rovnou lízne kartu, takže tě „nestojí" kartu.</div><div class="ex">Balíček s nimi drží tempo líznutí.</div></div><div class="card" data-s="sac outlet obětovací motor permanent, který ti kdykoli dovolí obětovat vlastního tvora. zachrání tvora před vyhnáním — obětuješ ho dřív."><div class="top"><span class="term" lang="en">Sac outlet</span><span class="cz">Obětovací motor</span></div><div class="def">Permanent, který ti kdykoli dovolí obětovat vlastního tvora.</div><div class="ex">Zachrání tvora před vyhnáním — obětuješ ho dřív.</div></div><div class="card" data-s="blink probliknutí vyhnat vlastní permanent a hned ho vrátit, čímž znovu spustíš jeho etb. dvakrát využiješ „když vstoupí na bojiště&quot;."><div class="top"><span class="term" lang="en">Blink</span><span class="cz">Probliknutí</span></div><div class="def">Vyhnat vlastní permanent a hned ho vrátit, čímž znovu spustíš jeho ETB.</div><div class="ex">Dvakrát využiješ „když vstoupí na bojiště".</div></div><div class="card" data-s="ping štípnutí malé opakovatelné zranění, obvykle jeden bod. postupně sundá malé tvory."><div class="top"><span class="term" lang="en">Ping</span><span class="cz">Štípnutí</span></div><div class="def">Malé opakovatelné zranění, obvykle jeden bod.</div><div class="ex">Postupně sundá malé tvory.</div></div></div></div>
-    </div>
-    <div class="empty" id="empty" role="status" aria-live="polite">Nic takového v taháku není. Zkus jiné slovo.</div>
-  </section>
+  </div>
 
   <footer>
-    Untap ✦ společník k Foiliu. Uzavřený slovník, jakmile ho znáš, přečteš skoro každou kartu.<br>
-    Detailní znění pravidel má oficiální glosář Wizards of the Coast.
+    Untap ✦ společník k <a href="https://foilio.cards">Foiliu</a>. Tři karetní hry, tři taháky, jeden jazyk — čeština.<br>
+    Detailní znění pravidel má vždy oficiální zdroj dané hry.
   </footer>
 </div>
-
-<nav class="tabbar" aria-label="Rychlá navigace">
-  <a class="tab" href="#tah" data-t="tah"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v4h-4"/></svg><span>Tah</span></a>
-  <a class="tab" href="#karta" data-t="karta"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2.5"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><span>Karta</span></a>
-  <a class="tab" href="#barvy" data-t="barvy"><svg viewBox="0 0 24 24"><path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11Z"/></svg><span>Barvy</span></a>
-  <a class="tab" href="#souboj" data-t="souboj"><svg viewBox="0 0 24 24"><path d="M14.5 4.5 20 4l-.5 5.5L9 20l-5-5 10.5-10.5Z"/><path d="m4 15 5 5"/><path d="M9.5 4.5 4 4l.5 5.5L15 20l5-5"/></svg><span>Souboj</span></a>
-  <a class="tab" href="#slovnik" data-t="slovnik"><svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5Z"/><path d="M4 20.5A2.5 2.5 0 0 1 6.5 18H20"/></svg><span>Slovník</span></a>
-</nav>
-
-<script>
-const content=document.getElementById('content');
-const chipsEl=document.getElementById('chips');
-const emptyEl=document.getElementById('empty');
-const qEl=document.getElementById('q');
-let activeCat='all';
-
-const secs=[...content.querySelectorAll('.gsec')].map(el=>({
-  el, cat:el.dataset.cat, countEl:el.querySelector('.count'),
-  cards:[...el.querySelectorAll('.card')].map(c=>({el:c,hay:c.dataset.s}))
-}));
-
-function render(){
-  const q=qEl.value.trim().toLowerCase();
-  let any=false;
-  for(const s of secs){
-    const inCat=activeCat==='all'||activeCat===s.cat;
-    let n=0;
-    for(const c of s.cards){
-      const hit=!q||c.hay.includes(q);
-      c.el.hidden=!hit;
-      if(hit)n++;
-    }
-    const show=inCat&&n>0;
-    s.el.hidden=!show;
-    if(show){
-      any=true;
-      s.countEl.textContent=n;
-      s.countEl.setAttribute('aria-label',n+' pojmů');
-    }
-  }
-  emptyEl.classList.toggle('show',!any);
-}
-
-chipsEl.addEventListener('click',e=>{
-  const b=e.target.closest('.chip');
-  if(!b)return;
-  activeCat=b.dataset.cat;
-  chipsEl.querySelectorAll('.chip').forEach(c=>{
-    const on=c===b;
-    c.classList.toggle('active',on);
-    c.setAttribute('aria-pressed',on);
-  });
-  render();
-});
-qEl.addEventListener('input',render);
-
-// Bottom tabbar highlights the section currently in view. The root is squeezed
-// to a thin band below the top edge, so "current" means "crossing that band" —
-// comparing intersection ratios would favour short sections over tall ones.
-const tabs=[...document.querySelectorAll('.tab')];
-const ids=['tah','karta','barvy','souboj','slovnik'];
-const crossing=new Set();
-let current=ids[0];
-const io=new IntersectionObserver(es=>{
-  for(const e of es) e.isIntersecting?crossing.add(e.target.id):crossing.delete(e.target.id);
-  for(let i=ids.length-1;i>=0;i--) if(crossing.has(ids[i])){current=ids[i];break;}
-  for(const t of tabs){
-    const on=t.dataset.t===current;
-    t.classList.toggle('active',on);
-    on?t.setAttribute('aria-current','true'):t.removeAttribute('aria-current');
-  }
-},{threshold:0,rootMargin:'-88px 0px -78% 0px'});
-for(const id of ids){
-  const el=document.getElementById(id);
-  if(el)io.observe(el);
-}
-</script>
 </body>
 </html>

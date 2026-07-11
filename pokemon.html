@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Untap — průvodce pro začátek s Pokémon TCG</title>
+<meta name="description" content="Struktura tahu, jak číst kartu, typy energií, útok, prize karty, pravidla, typické chyby a vyhledávatelný slovník. Pokémon TCG česky, na jednom místě.">
+<meta name="theme-color" content="#f5f5f7">
+<link rel="canonical" href="https://mtg-untap.vercel.app/pokemon.html">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://mtg-untap.vercel.app/pokemon.html">
+<meta property="og:title" content="Untap — průvodce pro začátek s Pokémon TCG">
+<meta property="og:description" content="Struktura tahu, jak číst kartu, typy energií, útok, prize karty, pravidla a vyhledávatelný slovník. Česky, na jednom místě.">
+<meta property="og:image" content="https://mtg-untap.vercel.app/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="cs_CZ">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  :root{--accent:#2f6fd0;--accent-ink:#1f5bb5;--accent-soft:#e6effc;--accent-tint:#f3f8fe}
+  /* Pokémon card anatomy — used only on this page */
+  .pkcard{flex:0 0 244px;max-width:100%;background:#f4d94a;padding:9px;border-radius:14px;box-shadow:var(--shadow)}
+  .pk-inner{background:#f7f5ee;border-radius:var(--r-sm);padding:8px;position:relative}
+  .pk-badge{position:absolute;width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-weight:800;font-size:var(--t-xs);display:flex;align-items:center;justify-content:center;z-index:2;box-shadow:0 2px 6px rgba(0,0,0,.25)}
+  .pk-head{position:relative;display:flex;align-items:center;gap:6px;color:#23272f}
+  .pk-stage{font-size:9px;font-weight:700;color:#8a7f5e;text-transform:uppercase;letter-spacing:.05em}
+  .pk-name{font-weight:800;font-size:var(--t-md);flex:1}
+  .pk-hp{font-weight:800;font-size:var(--t-xs);color:#c0001a}
+  .pk-art{position:relative;height:96px;margin-top:6px;background:linear-gradient(135deg,#bfe3d0,#8fcbe0 55%,#c8d98f);border:3px solid #e9dfa0;border-radius:6px;display:flex;align-items:flex-end;justify-content:center;color:#4a5040;font-size:var(--t-2xs);padding-bottom:5px}
+  .pk-atk{position:relative;display:flex;align-items:center;gap:6px;margin-top:8px;padding:5px 4px;border-top:1px solid #e6e1cf;color:#23272f}
+  .pk-cost{display:flex;gap:2px}
+  .pk-an{font-weight:800;font-size:var(--t-sm);flex:1}
+  .pk-dmg{font-weight:800;font-size:var(--t-md)}
+  .pk-bar{position:relative;display:flex;justify-content:space-between;gap:4px;margin-top:6px;padding-top:5px;border-top:1px solid #e6e1cf;font-size:8.5px;font-weight:700;color:#5a5647}
+  .e{width:15px;height:15px;border-radius:50%;display:inline-block;box-shadow:inset 0 0 0 1px rgba(0,0,0,.18)}
+  .e.G{background:#5aa877} .e.R{background:#e56a5c} .e.W{background:#5a97d6} .e.L{background:#e5c94a}
+  .e.P{background:#b06fc0} .e.F{background:#c88a4a} .e.D{background:#5c5566} .e.M{background:#a9b3bd} .e.C{background:#d8d3c4}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <a class="logo" href="index.html">Untap</a>
+  </div>
+
+  <div class="hero">
+    <div class="kicker">Průvodce pro úplný začátek</div>
+    <h1>Nauč se hrát <em>Pokémon</em></h1>
+    <p>Struktura tahu, jak číst kartu, typy energií, útok, prize karty, pravidla, chyby a vyhledávatelný slovník. Vše na jednom místě.</p>
+    <div class="pips" aria-hidden="true"><span class="pip grass"></span><span class="pip fire"></span><span class="pip water"></span><span class="pip lightning"></span><span class="pip psychic"></span><span class="pip fighting"></span><span class="pip dark"></span><span class="pip metal"></span></div>
+  </div>
+
+  <!-- TURN -->
+  <section class="block" id="tah">
+    <div class="eyebrow">Kostra hry</div>
+    <h2>Struktura tahu</h2>
+    <p class="lead">Líznutím tvůj tah začne, útokem končí. Vše mezi tím děláš v libovolném pořadí a kolikrát chceš — až na věci s limitem.</p>
+    <div class="panel">
+      <div class="flow">
+        <div class="step"><div class="n">01</div><div class="t">Draw</div><div class="d">Lízni kartu. Nemáš z čeho? Prohráváš.</div></div>
+        <div class="step"><div class="n">02</div><div class="t">Nasaď</div><div class="d">Basic Pokémony na lavičku (až 5).</div></div>
+        <div class="step"><div class="n">03</div><div class="t">Vyvíjej</div><div class="d">Polož vývoj na správný Pokémon.</div></div>
+        <div class="step"><div class="n">04</div><div class="t">Energie</div><div class="d">Připni jednu energii. Jen 1 za tah.</div></div>
+        <div class="step"><div class="n">05</div><div class="t">Trenéři</div><div class="d">Itemy libovolně, 1 Supporter, 1 Stadium.</div></div>
+        <div class="step"><div class="n">06</div><div class="t">Ústup</div><div class="d">Jednou smíš vyměnit aktivního.</div></div>
+        <div class="step"><div class="n">07</div><div class="t">Útok</div><div class="d">Zaútoč aktivním — tím tah končí.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CARD ANATOMY -->
+  <section class="block" id="karta">
+    <div class="eyebrow">Slovník na jedné kartě</div>
+    <h2>Jak číst kartu</h2>
+    <p class="lead">Karta ti řekne skoro vše. Tady je schéma s částmi, které tě zajímají.</p>
+    <div class="anat">
+      <div class="pkcard" aria-label="Schéma karty">
+        <div class="pk-inner">
+          <div class="pk-head">
+            <span class="pk-badge" style="top:-11px;left:-11px">1</span>
+            <div style="flex:1"><div class="pk-stage">Stage 1 · vyvíjí se z Voltpupa <span class="pk-badge" style="position:static;display:inline-flex;vertical-align:middle">4</span></div><div class="pk-name">Sparkmouse</div></div>
+            <span class="pk-hp">HP 90</span><span class="e L"></span>
+            <span class="pk-badge" style="top:-11px;right:-11px">2</span>
+          </div>
+          <div class="pk-art">ilustrace<span class="pk-badge" style="top:-11px;right:-11px">3</span></div>
+          <div class="pk-atk"><span class="pk-badge" style="top:-11px;left:-11px">5</span><span class="pk-cost"><span class="e L"></span><span class="e C"></span></span><span class="pk-an">Thunder Jolt</span><span class="pk-dmg">50</span></div>
+          <div class="pk-bar"><span>Weak. ×2 <span class="e F"></span></span><span>Res. −30 <span class="e M"></span></span><span>Retreat ●<span class="pk-badge" style="top:-11px;right:-11px">6</span></span></div>
+        </div>
+      </div>
+      <div class="legend">
+        <ol>
+          <li><b>Name</b> <span class="czl">— jméno Pokémona.</span></li>
+          <li><b>HP + Type</b> <span class="czl">— životy a typ (barevný symbol). HP 0 = KO.</span></li>
+          <li><b>Art</b> <span class="czl">— ilustrace, na hru nemá vliv.</span></li>
+          <li><b>Stage</b> <span class="czl">— stupeň vývoje a z koho se vyvíjí.</span></li>
+          <li><b>Attacks</b> <span class="czl">— cena v energiích, jméno útoku a zranění.</span></li>
+          <li><b>Weakness / Resistance / Retreat</b> <span class="czl">— slabina (×2), odolnost (−30) a cena ústupu.</span></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- ENERGY TYPES -->
+  <section class="block" id="typy">
+    <div class="eyebrow">Devět typů</div>
+    <h2>Typy energií</h2>
+    <p class="lead">Každý Pokémon má typ a útočí energií svého typu. Typ určuje hlavně to, komu dáváš slabinu za dvojnásobek.</p>
+    <div class="colors">
+      <div class="clr" style="--ca:#5aa877"><span class="dot"></span><div><div class="cn">Grass <span>Tráva</span></div><div class="cd">Rostlinní a hmyzí Pokémoni, léčení a jed. <b>Slabina</b> často u Ohně.</div></div></div>
+      <div class="clr" style="--ca:#e56a5c"><span class="dot"></span><div><div class="cn">Fire <span>Oheň</span></div><div class="cd">Silné útoky, které si často žádají <b>odhodit energii</b>. Bije do Trávy a Kovu.</div></div></div>
+      <div class="clr" style="--ca:#5a97d6"><span class="dot"></span><div><div class="cn">Water <span>Voda</span></div><div class="cd">Flexibilní, s manipulací energií a lavičky. Bije do Ohně a Bojových.</div></div></div>
+      <div class="clr" style="--ca:#e5c94a"><span class="dot"></span><div><div class="cn">Lightning <span>Blesk</span></div><div class="cd">Rychlé zranění a <b>zrychlení energií</b>. Bije do Vody a Létajících.</div></div></div>
+      <div class="clr" style="--ca:#b06fc0"><span class="dot"></span><div><div class="cn">Psychic <span>Psychická</span></div><div class="cd">Manipulace se stavy a rukou soupeře. Bije do Bojových a Jedových.</div></div></div>
+      <div class="clr" style="--ca:#c88a4a"><span class="dot"></span><div><div class="cn">Fighting <span>Bojová</span></div><div class="cd">Vysoké zranění zblízka. Bije do Blesku, Kovu a Temných.</div></div></div>
+      <div class="clr" style="--ca:#5c5566"><span class="dot"></span><div><div class="cn">Darkness <span>Temná</span></div><div class="cd">Podrazy, mizení karet a jed. Bije do Psychických.</div></div></div>
+      <div class="clr" style="--ca:#a9b3bd"><span class="dot"></span><div><div class="cn">Metal <span>Kovová</span></div><div class="cd">Odolní Pokémoni s vysokým HP a obranou. Bije do Trávy a Víl.</div></div></div>
+      <div class="clr" style="--ca:#d8d3c4"><span class="dot"></span><div><div class="cn">Colorless <span>Bezbarvá</span></div><div class="cd">Univerzální. <b>Bezbarvou cenu útoku</b> zaplatíš energií jakéhokoli typu.</div></div></div>
+    </div>
+    <div class="callout"><b>Tip:</b> nováčkovi stačí <b>jeden typ</b>. Míň typů znamená míň druhů energie v balíčku a spolehlivější útoky.</div>
+  </section>
+
+  <!-- ATTACK -->
+  <section class="block" id="utok">
+    <div class="eyebrow">Krok za krokem</div>
+    <h2>Jak proběhne útok</h2>
+    <p class="lead">Útočí vždycky jen tvůj Aktivní Pokémon a míří na soupeřova Aktivního. Útok tvůj tah ukončí.</p>
+    <div class="steps3">
+      <div class="s3"><div class="num">1</div><div class="st">Zaplať cenu útoku <span>energií</span></div><div class="sd">Aktivní musí mít připnuté <b>energie podle ceny</b> útoku. Energie zůstává připnutá — neodhazuje se (pokud to útok neříká).</div></div>
+      <div class="s3"><div class="num">2</div><div class="st">Spočítej zranění <span>slabina a odolnost</span></div><div class="sd">Polož <b>počítadla zranění</b>. Má-li cíl <b>slabinu</b> na tvůj typ, zranění je <b>×2</b>. <b>Odolnost</b> ho naopak sníží (obvykle −30).</div></div>
+      <div class="s3"><div class="num">3</div><div class="st">Knock Out → Prize <span>tvůj cíl</span></div><div class="sd">Když poškození <b>dosáhne HP</b>, Pokémon je vyřazený, jde do discardu a ty si <b>vezmeš prize kartu</b>. Soupeř postaví nového aktivního z lavičky.</div></div>
+    </div>
+    <div class="callout"><b>Důležité:</b> Pokémon se útokem <b>netapuje</b> a energie na něm zůstává, takže může útočit každý tah dokola. Zranění se <b>nehojí</b> samo — počítadla zůstávají, dokud je něco neodstraní.</div>
+  </section>
+
+  <!-- PRIZE / WIN -->
+  <section class="block" id="prize">
+    <div class="eyebrow">Jak se vyhrává</div>
+    <h2>Prize karty a cesty k výhře</h2>
+    <p class="lead">Na začátku dáš <b>6 karet stranou</b> jako prize. Za každý knock out si jednu vezmeš do ruky. Vyhraješ, jakmile máš všech šest.</p>
+    <div class="lifo">
+      <div class="lv top"><div><div class="lt">Vezmeš všech 6 prize karet</div><div class="ln">jedna za KO; silní Pokémoni (ex) dávají soupeři dvě</div></div><div class="ord">hlavní cesta</div></div>
+      <div class="lv"><div><div class="lt">Soupeř nemá žádného Pokémona</div><div class="ln">jeho aktivní byl KO a lavička je prázdná</div></div><div class="ord">i takhle</div></div>
+      <div class="lv"><div><div class="lt">Soupeř si nemůže líznout</div><div class="ln">na začátku tahu má prázdný balíček (deck out)</div></div><div class="ord">i takhle</div></div>
+    </div>
+    <div class="callout"><b>Prize trade:</b> celá hra je závod o prize. Pokémoni <b>ex</b> tlačí víc zranění, ale za jejich KO dá soupeř dvě karty — jeden špatný obchod tě může stát hru.</div>
+  </section>
+
+  <!-- RULES -->
+  <section class="block" id="pravidla">
+    <div class="eyebrow">Co se nejvíc plete</div>
+    <h2>Pravidla, na která pozor</h2>
+    <div class="rules">
+      <div class="rule"><div class="rt">Jedna energie za tah</div><div class="rd">Připnout smíš <b>jen jednu energii za tah</b>, pokud karta neříká jinak. Buduješ útočníka postupně.</div></div>
+      <div class="rule"><div class="rt">Jeden Supporter za tah</div><div class="rd"><b>Item</b> a <b>Nástroje</b> hraj kolik chceš, ale <b>Supportera jen jednoho</b> a <b>Stadium jen jedno</b> za tah.</div></div>
+      <div class="rule"><div class="rt">První tah je omezený</div><div class="rd">Hráč <b>na tahu první nesmí zaútočit</b> ani zahrát <b>Supportera</b> ve svém prvním tahu. A <b>nikdo nevyvíjí</b> v prvním tahu hry.</div></div>
+      <div class="rule"><div class="rt">Vývoj má načasování</div><div class="rd">Pokémona <b>nasazeného tento tah</b> (ani čerstvě vyvinutého) hned <b>znovu nevyvineš</b>. Vývoj navíc <b>zbaví Pokémona stavů</b> a efektů, ale <b>zranění zůstává</b>.</div></div>
+      <div class="rule"><div class="rt">Lavička max 5</div><div class="rd">Vedle Aktivního můžeš mít <b>až 5 Pokémonů na lavičce</b>. Tam si v klidu nabíjíš energii a vyvíjíš zálohu.</div></div>
+      <div class="rule"><div class="rt">Ústup stojí energii</div><div class="rd">Ustoupit smíš <b>jednou za tah</b>: odhodíš tolik energií, kolik je <b>retreat cost</b>, a vyměníš aktivního za lavičkového.</div></div>
+      <div class="rule"><div class="rt">Musíš mít aktivního</div><div class="rd">Po KO hned postavíš <b>nového aktivního z lavičky</b>. Když nemáš koho postavit, <b>prohráváš</b>.</div></div>
+      <div class="rule"><div class="rt">Balíček = 60 karet</div><div class="rd">Přesně <b>60 karet</b>, max <b>4 kopie</b> se stejným jménem (základní energie neomezeně).</div></div>
+    </div>
+  </section>
+
+  <!-- SPECIAL CONDITIONS -->
+  <section class="block" id="stavy">
+    <div class="eyebrow">Zvláštní situace</div>
+    <h2>Speciální stavy</h2>
+    <p class="lead">Postihují jen <b>Aktivního</b> Pokémona. Většina zmizí, když Pokémon <b>ustoupí</b> nebo se <b>vyvine</b>.</p>
+    <div class="rules">
+      <div class="rule"><div class="rt">Asleep <span class="cz">Spánek</span></div><div class="rd">Nemůže útočit ani ustoupit. Mezi tahy <b>hodíš mincí</b> — panna ho probudí.</div></div>
+      <div class="rule"><div class="rt">Paralyzed <span class="cz">Paralýza</span></div><div class="rd">Nemůže útočit ani ustoupit. Zmizí <b>na konci tvého příštího tahu</b>.</div></div>
+      <div class="rule"><div class="rt">Confused <span class="cz">Zmatek</span></div><div class="rd">Při útoku <b>hodíš mincí</b>; při orlu dáš <b>30 zranění sám sobě</b> a útok selže.</div></div>
+      <div class="rule"><div class="rt">Poisoned <span class="cz">Otrava</span></div><div class="rd">Mezi tahy dostane <b>10 zranění</b>. Drží se, dokud Pokémon neustoupí nebo se nevyvine.</div></div>
+      <div class="rule"><div class="rt">Burned <span class="cz">Popálení</span></div><div class="rd">Mezi tahy <b>20 zranění</b>, pak hod mincí — panna popálení sundá.</div></div>
+      <div class="rule"><div class="rt">Kombinace stavů</div><div class="rd">Otrava a popálení se sčítají s jedním z „nemůže se hýbat" stavů (spánek/paralýza/zmatek). Ustup je nejrychlejší reset.</div></div>
+    </div>
+  </section>
+
+  <!-- MISTAKES -->
+  <section class="block" id="chyby">
+    <div class="eyebrow">Vyhni se jim</div>
+    <h2>Typické chyby začátečníka</h2>
+    <div class="miss">
+      <div class="m"><div class="bad"><span class="tag x">✕</span><span>Dáš do balíčku málo Basic Pokémonů.</span></div><div class="fix"><span class="tag c">✓</span><span>Bez Basic v úvodní ruce <b>mulliganuješ</b> a soupeř lízne kartu navíc. Měj jich <b>aspoň deset až dvanáct</b>.</span></div></div>
+      <div class="m"><div class="bad"><span class="tag x">✕</span><span>Zapomeneš každý tah připnout energii.</span></div><div class="fix"><span class="tag c">✓</span><span>Energie je tvůj <b>jediný zdroj útoku</b> a smíš jen jednu za tah. Připínej ji <b>každé kolo</b>, ať máš čím útočit.</span></div></div>
+      <div class="m"><div class="bad"><span class="tag x">✕</span><span>Všechnu energii sypeš na jednoho Pokémona.</span></div><div class="fix"><span class="tag c">✓</span><span>Jeden KO a jsi bez plánu. <b>Nabíjej i zálohu na lavičce</b>, ať máš plynulý nástupce.</span></div></div>
+      <div class="m"><div class="bad"><span class="tag x">✕</span><span>Vepředu necháš Pokémona s drahým ústupem.</span></div><div class="fix"><span class="tag c">✓</span><span>Hlídej <b>retreat cost</b>. Drahý ústupce v aktivní pozici tě může na kola uvěznit.</span></div></div>
+      <div class="m"><div class="bad"><span class="tag x">✕</span><span>Bezhlavě nasadíš svého Pokémona ex dopředu.</span></div><div class="fix"><span class="tag c">✓</span><span>Za jeho KO dá soupeř <b>dvě prize karty</b>. Posílej ho útočit, až se to vyplatí.</span></div></div>
+      <div class="m"><div class="bad"><span class="tag x">✕</span><span>Jdeš první a čekáš, že hned zaútočíš.</span></div><div class="fix"><span class="tag c">✓</span><span>První hráč <b>v prvním tahu neútočí</b>. Využij ho na nasazení, energii a přípravu.</span></div></div>
+    </div>
+  </section>
+
+  <!-- FROM MAGIC -->
+  <section class="block" id="mtg">
+    <div class="eyebrow">Z jedné hry do druhé</div>
+    <h2>Z Magicu do Pokémonu</h2>
+    <p class="lead">Přicházíš z Magicu? Spoustu pojmů máš v hlavě, jen se jinak jmenují — a pár věcí je vyloženě naopak.</p>
+    <div class="maps">
+      <div class="map"><span class="hs">Land / mana</span><span class="arrow">→</span><span class="mtg">Energy<small>připnutá na Pokémona</small></span></div>
+      <div class="map"><span class="hs">Creature</span><span class="arrow">→</span><span class="mtg">Pokémon</span></div>
+      <div class="map"><span class="hs">Power / Toughness</span><span class="arrow">→</span><span class="mtg">Zranění / HP</span></div>
+      <div class="map"><span class="hs">Life total</span><span class="arrow">→</span><span class="mtg">Prize karty<small>šest kusů</small></span></div>
+      <div class="map"><span class="hs">Sorcery</span><span class="arrow">→</span><span class="mtg">Trainer<small>Item / Supporter</small></span></div>
+      <div class="map"><span class="hs">Graveyard</span><span class="arrow">→</span><span class="mtg">Discard pile</span></div>
+      <div class="map"><span class="hs">Aura / Equipment</span><span class="arrow">→</span><span class="mtg">Pokémon Tool</span></div>
+      <div class="map"><span class="hs">Tapping</span><span class="arrow">→</span><span class="mtg">nic<small>Pokémon se netapuje</small></span></div>
+    </div>
+    <div class="eyebrow" style="margin-top:20px">Tři velké rozdíly</div>
+    <div class="diffs">
+      <div class="diff"><div class="dt">1 · Energie zůstává na Pokémonovi</div><div class="dd">Není to obnovitelný mana pool. Připínáš <b>jednu energii za tah</b> a útočníka <b>buduješ v čase</b>. O energii přijdeš hlavně, když je Pokémon vyřazený nebo ustupuje.</div></div>
+      <div class="diff"><div class="dt">2 · V cizím tahu skoro nezasáhneš</div><div class="dd">V Magicu reaguješ instanty. V Pokémonu se hraje <b>„na svém tahu"</b> — na soupeřův tah prakticky neodpovídáš. Žádný zásobník, žádná priorita.</div></div>
+      <div class="diff"><div class="dt">3 · Vyhráváš prize kartami, ne životy na nulu</div><div class="dd">Nesrážíš jeden life total, ale <b>rozbíjíš cíle</b>. Šest knock outů (nebo tři dvouprize Pokémoni) a je konec. Proto řešíš, <b>koho</b> a <b>kdy</b> vyřadit.</div></div>
+    </div>
+  </section>
+
+  <!-- FORMATS -->
+  <section class="block" id="formaty">
+    <div class="eyebrow">Kde se vlastně hraje</div>
+    <h2>Formáty</h2>
+    <p class="lead">Základní pravidla jsou všude stejná. Liší se hlavně to, které sety karet smíš použít.</p>
+    <div class="rules">
+      <div class="rule"><div class="rt">Standard</div><div class="rd">Hlavní turnajový formát: <b>jen novější sety</b> podle aktuální rotace. Sem míří většina nováčků i soutěží.</div></div>
+      <div class="rule"><div class="rt">Expanded</div><div class="rd">Širší povolený rozsah setů (od Black &amp; White dál). Víc kombinací, ale i víc pravidlových výjimek.</div></div>
+      <div class="rule"><div class="rt">GLC <span class="cz">(Gym Leader Challenge)</span></div><div class="rd">Kasuál oblíbený u sběratelů: <b>jeden typ</b>, <b>od každé karty jen jedna</b>. Levný a pestrý způsob hraní.</div></div>
+      <div class="rule"><div class="rt">Pokémon TCG Live</div><div class="rd">Digitální hra <b>zdarma</b>. Pravidla, prize i stavy hlídá klient za tebe — <b>nejmírnější způsob, jak se hru naučit</b>.</div></div>
+    </div>
+  </section>
+
+  <!-- FIRST DECK -->
+  <section class="block" id="balicek">
+    <div class="eyebrow">Praktické</div>
+    <h2>Tvůj první balíček</h2>
+    <p class="lead">Nestav ho od nuly. Kup hotový a měň v něm po kartě, ať vidíš, co která dělá.</p>
+    <div class="steps3">
+      <div class="s3"><div class="num">1</div><div class="st">Kup starter <span>hotový balíček</span></div><div class="sd">Představený deck z krabice se dá hrát rovnou a je poskládaný tak, aby fungoval.</div></div>
+      <div class="s3"><div class="num">2</div><div class="st">Drž jeden typ <span>ne pět</span></div><div class="sd">Méně typů = <b>spolehlivější energie</b>. Nováčkovi bohatě stačí jeden, dva jsou příjemný strop.</div></div>
+      <div class="s3"><div class="num">3</div><div class="st">Hlídej poměr karet <span>a dost Basic</span></div><div class="sd">Zhruba <b>15 Pokémonů, 35 trenérů, 10 energií</b>. A hlavně dost <b>Basic Pokémonů</b>, ať nemulliganuješ.</div></div>
+    </div>
+    <div class="maps">
+      <div class="map"><span class="hs">60 karet</span><span class="arrow">→</span><span class="mtg">~15 Pokémonů<small>z toho 10+ Basic</small></span></div>
+      <div class="map"><span class="hs">zbytek</span><span class="arrow">→</span><span class="mtg">~35 trenérů / ~10 energií</span></div>
+    </div>
+    <div class="callout"><b>Pravidlo palce:</b> dej do balíčku <b>víc Basic Pokémonů a víc draw trenérů</b>, než ti přijde nutné. Ruka bez Basic je mulligan a nuda; konzistence vyhrává hry.</div>
+  </section>
+
+  <!-- GLOSSARY -->
+  <section class="block" id="slovnik">
+    <div class="eyebrow">Vyhledávatelný</div>
+    <h2>Slovník pojmů</h2>
+    <p class="lead">Anglický termín, český význam, příklad. Napiš do hledání a hned to najde.</p>
+    <div class="search">
+      <span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></span>
+      <input id="q" type="text" placeholder="Hledej: prize, slabina, supporter, lavička…" autocomplete="off" aria-label="Hledat pojem">
+    </div>
+    <div class="chips" id="chips"><button class="chip active" data-cat="all" aria-pressed="true">Vše</button><button class="chip" data-cat="utok" aria-pressed="false">Útok</button><button class="chip" data-cat="pokemoni" aria-pressed="false">Pokémoni</button><button class="chip" data-cat="treneri" aria-pressed="false">Trenéři</button><button class="chip" data-cat="energie" aria-pressed="false">Energie</button><button class="chip" data-cat="zony" aria-pressed="false">Zóny</button><button class="chip" data-cat="stavy" aria-pressed="false">Stavy</button><button class="chip" data-cat="pravidla" aria-pressed="false">Pravidla hry</button><button class="chip" data-cat="slang" aria-pressed="false">Slang u stolu</button></div>
+    <div id="content">
+
+      <div class="gsec" data-cat="utok"><div class="gsec-head"><h3>Útok</h3><span class="count" aria-label="8 pojmů">8</span></div><div class="grid">
+        <div class="card" data-s="attack útok pokémon uštědří zranění, když má připnuté energie podle ceny. útok ukončí tvůj tah."><div class="top"><span class="term" lang="en">Attack</span><span class="cz">Útok</span></div><div class="def">Aktivní Pokémon uštědří zranění, má-li připnuté energie podle ceny.</div><div class="ex">Útok ukončí tvůj tah.</div></div>
+        <div class="card" data-s="attack cost cena útoku energetické symboly u útoku. tolik energií musí být připnuto. dvě energie = útok za dvě."><div class="top"><span class="term" lang="en">Attack cost</span><span class="cz">Cena útoku</span></div><div class="def">Energetické symboly u útoku, tolik energií musí být připnuto.</div><div class="ex">Bezbarvý symbol zaplatíš čímkoli.</div></div>
+        <div class="card" data-s="weakness slabina zranění od daného typu se násobí dvěma. moderní slabina je vždy ×2. vodní se slabinou na blesk dostane dvojnásobek."><div class="top"><span class="term" lang="en">Weakness</span><span class="cz">Slabina</span></div><div class="def">Zranění od daného typu se násobí (dnes vždy ×2).</div><div class="ex">Vodní se slabinou na Blesk dostane dvojnásobek.</div></div>
+        <div class="card" data-s="resistance odolnost snižuje příchozí zranění od daného typu, obvykle o třicet. −30 od bojových."><div class="top"><span class="term" lang="en">Resistance</span><span class="cz">Odolnost</span></div><div class="def">Snižuje příchozí zranění od daného typu, obvykle o 30.</div><div class="ex">−30 od Bojových.</div></div>
+        <div class="card" data-s="knock out ko vyřazení pokémon dosáhl svého hp, jde do discardu a soupeř bere prize kartu. dvouprize pokémoni dají dvě."><div class="top"><span class="term" lang="en">Knock Out (KO)</span><span class="cz">Vyřazení</span></div><div class="def">Pokémon dosáhl svého HP, jde do discardu a soupeř bere prize.</div><div class="ex">Pokémon ex dá soupeři dvě prize.</div></div>
+        <div class="card" data-s="damage counter počítadlo zranění žeton značící deset zranění na pokémonovi. drží se, dokud ho něco nezhojí. 90 hp se 40 zranění je 50 od ko."><div class="top"><span class="term" lang="en">Damage counter</span><span class="cz">Počítadlo zranění</span></div><div class="def">Žeton značící 10 zranění. Drží se, dokud ho něco nezhojí.</div><div class="ex">90 HP se 40 zranění je 50 od KO.</div></div>
+        <div class="card" data-s="retreat ústup vyměníš aktivního za lavičkového, zaplatíš odhozením energií. jen jednou za tah. drahý retreat tě uvězní vepředu."><div class="top"><span class="term" lang="en">Retreat</span><span class="cz">Ústup</span></div><div class="def">Vyměníš aktivního za lavičkového a zaplatíš odhozením energií. 1× za tah.</div><div class="ex">Drahý retreat tě uvězní vepředu.</div></div>
+        <div class="card" data-s="ability schopnost efekt pokémona mimo útok, obvykle zdarma a neukončí tah. používáš ji, i když je pokémon na lavičce."><div class="top"><span class="term" lang="en">Ability</span><span class="cz">Schopnost</span></div><div class="def">Efekt Pokémona mimo útok, obvykle zdarma a neukončí tah.</div><div class="ex">Funguje i z lavičky.</div></div>
+      </div></div>
+
+      <div class="gsec" data-cat="pokemoni"><div class="gsec-head"><h3>Pokémoni</h3><span class="count" aria-label="7 pojmů">7</span></div><div class="grid">
+        <div class="card" data-s="basic pokémon základní pokémon hraješ ho rovnou z ruky. základ, na kterém stavíš vývoj. potřebuješ ho v úvodní ruce, jinak mulliganuješ."><div class="top"><span class="term" lang="en">Basic Pokémon</span><span class="cz">Základní</span></div><div class="def">Hraješ rovnou z ruky, základ pro vývoj.</div><div class="ex">Bez Basic v ruce mulliganuješ.</div></div>
+        <div class="card" data-s="stage 1 / stage 2 stupeň vývoje vyšší formy, které pokládáš na správný předchozí stupeň. charmander → charmeleon → charizard."><div class="top"><span class="term" lang="en">Stage 1 / 2</span><span class="cz">Stupeň vývoje</span></div><div class="def">Vyšší formy, které pokládáš na správný předchozí stupeň.</div><div class="ex">Basic → Stage 1 → Stage 2.</div></div>
+        <div class="card" data-s="evolve vyvinout položíš vývoj na pokémona. zbaví ho stavů a efektů, zranění zůstane. nejde v tahu, kdy pokémon přišel."><div class="top"><span class="term" lang="en">Evolve</span><span class="cz">Vyvinout</span></div><div class="def">Položíš vývoj na Pokémona. Zbaví ho stavů, ale zranění zůstává.</div><div class="ex">Nejde v tahu, kdy Pokémon přišel do hry.</div></div>
+        <div class="card" data-s="hp životy kolik zranění pokémon vydrží, než je ko. čím vyšší hp, tím hůř se vyřazuje. 60 hp padne rychle, 300 hp vydrží."><div class="top"><span class="term" lang="en">HP</span><span class="cz">Životy</span></div><div class="def">Kolik zranění Pokémon vydrží, než je KO.</div><div class="ex">60 HP padne rychle, 300 HP vydrží.</div></div>
+        <div class="card" data-s="pokémon ex silný pokémon vyšší hp a útok, ale za jeho ko dá soupeř dvě prize karty. dvousečná zbraň."><div class="top"><span class="term" lang="en">Pokémon ex</span><span class="cz">(dvouprize)</span></div><div class="def">Vyšší HP a útok, ale za jeho KO dá soupeř dvě prize karty.</div><div class="ex">Dvousečná zbraň.</div></div>
+        <div class="card" data-s="active pokémon aktivní pokémon ten vepředu. jen on útočí a je terčem soupeřova útoku. musíš ho vždycky mít."><div class="top"><span class="term" lang="en">Active Pokémon</span><span class="cz">Aktivní</span></div><div class="def">Pokémon vepředu — jediný, kdo útočí a je terčem.</div><div class="ex">Bez aktivního prohráváš.</div></div>
+        <div class="card" data-s="tera pokémon tera pokémon moderní pokémon, který je na lavičce imunní vůči zranění z útoků. musíš ho nejdřív dostat dopředu."><div class="top"><span class="term" lang="en">Tera Pokémon</span><span class="cz">Tera</span></div><div class="def">Na lavičce imunní vůči zranění z útoků.</div><div class="ex">Nejdřív ho musíš dostat dopředu.</div></div>
+      </div></div>
+
+      <div class="gsec" data-cat="treneri"><div class="gsec-head"><h3>Trenéři</h3><span class="count" aria-label="5 pojmů">5</span></div><div class="grid">
+        <div class="card" data-s="item předmět trenér, kterého smíš zahrát kolik chceš za tah. rychlé efekty. léčení, hledání karet, přesun energie."><div class="top"><span class="term" lang="en">Item</span><span class="cz">Předmět</span></div><div class="def">Trenér, kterého smíš zahrát kolik chceš za tah.</div><div class="ex">Léčení, hledání karet, přesun energie.</div></div>
+        <div class="card" data-s="supporter podporovatel silný trenér, ale jen jeden za tah. sem patří většina líznutí. professor's research lízne sedm nových."><div class="top"><span class="term" lang="en">Supporter</span><span class="cz">Podporovatel</span></div><div class="def">Silný trenér, ale jen jeden za tah. Sem patří většina líznutí.</div><div class="ex">Professor's Research lízne sedm nových karet.</div></div>
+        <div class="card" data-s="stadium stadion trenér, který zůstává ve hře a ovlivňuje oba hráče. jen jeden na stole, nový nahradí starý."><div class="top"><span class="term" lang="en">Stadium</span><span class="cz">Stadion</span></div><div class="def">Zůstává ve hře a ovlivňuje oba hráče. Jen jeden na stole.</div><div class="ex">Nový stadion nahradí ten předchozí.</div></div>
+        <div class="card" data-s="pokémon tool nástroj trenér, kterého připneš na pokémona jako trvalý bonus. přidá hp nebo změní útok."><div class="top"><span class="term" lang="en">Pokémon Tool</span><span class="cz">Nástroj</span></div><div class="def">Připneš ho na Pokémona jako trvalý bonus.</div><div class="ex">Přidá HP nebo upraví útok.</div></div>
+        <div class="card" data-s="draw supporter líznací supporter podporovatel, jehož hlavní efekt je líznout karty. motor konzistence balíčku. hraj ho skoro každý tah."><div class="top"><span class="term" lang="en">Draw supporter</span><span class="cz">Líznací podporovatel</span></div><div class="def">Supporter, jehož hlavní efekt je líznout karty. Motor konzistence.</div><div class="ex">Hraj ho skoro každý tah.</div></div>
+      </div></div>
+
+      <div class="gsec" data-cat="energie"><div class="gsec-head"><h3>Energie</h3><span class="count" aria-label="4 pojmy">4</span></div><div class="grid">
+        <div class="card" data-s="basic energy základní energie zdroj útoku daného typu. jediná karta, které smíš mít v balíčku neomezeně. připínáš jednu za tah."><div class="top"><span class="term" lang="en">Basic Energy</span><span class="cz">Základní energie</span></div><div class="def">Zdroj útoku daného typu. Jediná karta bez limitu kopií v balíčku.</div><div class="ex">Připínáš jednu za tah.</div></div>
+        <div class="card" data-s="special energy speciální energie energie s bonusovým efektem. počítá se do limitu čtyř kopií. dává třeba dvě energie najednou."><div class="top"><span class="term" lang="en">Special Energy</span><span class="cz">Speciální energie</span></div><div class="def">Energie s bonusem. Počítá se do limitu 4 kopií.</div><div class="ex">Umí dát dvě energie najednou.</div></div>
+        <div class="card" data-s="energy attachment připnutí energie jednou za tah připneš jednu energii na pokémona. tvůj hlavní zdroj tempa útoku."><div class="top"><span class="term" lang="en">Energy attachment</span><span class="cz">Připnutí energie</span></div><div class="def">Jednou za tah připneš jednu energii na Pokémona.</div><div class="ex">Hlavní zdroj tempa útoku.</div></div>
+        <div class="card" data-s="energy acceleration zrychlení energie efekty, které připnou energii navíc mimo běžný limit jedné. skok přes křivku útoku."><div class="top"><span class="term" lang="en">Energy acceleration</span><span class="cz">Zrychlení energie</span></div><div class="def">Efekty, které připnou energii navíc mimo běžný limit jedné.</div><div class="ex">Skok přes křivku útoku.</div></div>
+      </div></div>
+
+      <div class="gsec" data-cat="zony"><div class="gsec-head"><h3>Zóny</h3><span class="count" aria-label="6 pojmů">6</span></div><div class="grid">
+        <div class="card" data-s="deck balíček tvých 60 karet lícem dolů. líznout na začátku tahu a nemít z čeho = prohra. hlídej, ať nevymlátíš."><div class="top"><span class="term" lang="en">Deck</span><span class="cz">Balíček</span></div><div class="def">Tvých 60 karet lícem dolů. Prázdný balíček na začátku tahu = prohra.</div><div class="ex">Deck out je reálná cesta k porážce.</div></div>
+        <div class="card" data-s="bench lavička až pět pokémonů v záloze vedle aktivního. tady nabíjíš energii a vyvíjíš. lavičkoví nejsou běžně terčem."><div class="top"><span class="term" lang="en">Bench</span><span class="cz">Lavička</span></div><div class="def">Až 5 Pokémonů v záloze. Tady nabíjíš energii a vyvíjíš.</div><div class="ex">Lavičkoví nejsou běžně terčem útoku.</div></div>
+        <div class="card" data-s="discard pile odhazovací balíček mrtvé a použité karty lícem nahoru. leccos se z něj dá recyklovat trenéry."><div class="top"><span class="term" lang="en">Discard pile</span><span class="cz">Odhazovací balíček</span></div><div class="def">Mrtvé a použité karty lícem nahoru.</div><div class="ex">Leccos se dá recyklovat zpět.</div></div>
+        <div class="card" data-s="prize cards prize karty šest karet stranou lícem dolů. za každý ko si jednu bereš. všech šest = výhra."><div class="top"><span class="term" lang="en">Prize cards</span><span class="cz">Prize karty</span></div><div class="def">Šest karet stranou. Za každý KO si jednu bereš.</div><div class="ex">Všech šest v ruce = výhra.</div></div>
+        <div class="card" data-s="hand ruka karty, které držíš, bez limitu počtu. skrytá informace před soupeřem."><div class="top"><span class="term" lang="en">Hand</span><span class="cz">Ruka</span></div><div class="def">Karty, které držíš — bez limitu počtu.</div><div class="ex">Skrytá informace před soupeřem.</div></div>
+        <div class="card" data-s="lost zone ztracená zóna karty, které sem jdou, se už nevracejí. moderní mechanika s vlastními výplatami. tvrdší než discard."><div class="top"><span class="term" lang="en">Lost Zone</span><span class="cz">Ztracená zóna</span></div><div class="def">Karty odsud se už nevracejí. Tvrdší než discard.</div><div class="ex">Některé balíčky ji plní schválně.</div></div>
+      </div></div>
+
+      <div class="gsec" data-cat="stavy"><div class="gsec-head"><h3>Stavy</h3><span class="count" aria-label="5 pojmů">5</span></div><div class="grid">
+        <div class="card" data-s="asleep spánek aktivní nemůže útočit ani ustoupit. mezi tahy hodíš mincí, panna ho probudí."><div class="top"><span class="term" lang="en">Asleep</span><span class="cz">Spánek</span></div><div class="def">Nemůže útočit ani ustoupit. Hod mincí mezi tahy ho může probudit.</div><div class="ex">Ustup ho probudí hned.</div></div>
+        <div class="card" data-s="paralyzed paralýza aktivní nemůže útočit ani ustoupit. stav zmizí na konci tvého příštího tahu."><div class="top"><span class="term" lang="en">Paralyzed</span><span class="cz">Paralýza</span></div><div class="def">Nemůže útočit ani ustoupit. Zmizí na konci tvého příštího tahu.</div><div class="ex">Jedno kolo stojíš.</div></div>
+        <div class="card" data-s="confused zmatek při útoku hodíš mincí. při orlu dáš 30 zranění sám sobě a útok selže."><div class="top"><span class="term" lang="en">Confused</span><span class="cz">Zmatek</span></div><div class="def">Při útoku hodíš mincí; při smůle 30 zranění sobě a útok selže.</div><div class="ex">Ustup je bezpečnější než riskovat.</div></div>
+        <div class="card" data-s="poisoned otrava mezi tahy 10 zranění. drží se, dokud pokémon neustoupí nebo se nevyvine."><div class="top"><span class="term" lang="en">Poisoned</span><span class="cz">Otrava</span></div><div class="def">Mezi tahy 10 zranění, dokud Pokémon neustoupí nebo se nevyvine.</div><div class="ex">Tiká i v soupeřově tahu.</div></div>
+        <div class="card" data-s="burned popálení mezi tahy 20 zranění, pak hod mincí. panna popálení sundá."><div class="top"><span class="term" lang="en">Burned</span><span class="cz">Popálení</span></div><div class="def">Mezi tahy 20 zranění, pak hod mincí o jeho sundání.</div><div class="ex">Bolí víc než otrava.</div></div>
+      </div></div>
+
+      <div class="gsec" data-cat="pravidla"><div class="gsec-head"><h3>Pravidla hry</h3><span class="count" aria-label="6 pojmů">6</span></div><div class="grid">
+        <div class="card" data-s="mulligan mulligan nemáš-li v úvodní ruce žádného basic pokémona, ukážeš ji, zamícháš a lízneš znovu. soupeř si smí líznout kartu navíc."><div class="top"><span class="term" lang="en">Mulligan</span><span class="cz">Mulligan</span></div><div class="def">Bez Basic v úvodní ruce ji ukážeš, zamícháš a lízneš znovu.</div><div class="ex">Soupeř si za tvůj mulligan smí líznout kartu navíc.</div></div>
+        <div class="card" data-s="setup příprava líznete 7 karet, dáte 6 prize stranou a postavíte aktivního a lavičku z basic pokémonů. pak se hraje."><div class="top"><span class="term" lang="en">Setup</span><span class="cz">Příprava</span></div><div class="def">Líznout 7, dát 6 prize stranou, postavit aktivního a lavičku z Basic.</div><div class="ex">Bez Basic v ruce nejde nic postavit.</div></div>
+        <div class="card" data-s="first turn rule pravidlo prvního tahu hráč na tahu první neútočí a nehraje supportera. nikdo nevyvíjí v prvním tahu hry."><div class="top"><span class="term" lang="en">First turn rule</span><span class="cz">Pravidlo prvního tahu</span></div><div class="def">První hráč neútočí a nehraje Supportera; nikdo nevyvíjí v prvním tahu.</div><div class="ex">První tah je čistě příprava.</div></div>
+        <div class="card" data-s="deck out vymlácení nemůžeš-li si na začátku tahu líznout, prohráváš. pozor na karty, co ti melou balíček."><div class="top"><span class="term" lang="en">Deck out</span><span class="cz">Vymlácení</span></div><div class="def">Nemůžeš-li si na začátku tahu líznout, prohráváš.</div><div class="ex">Alternativní cesta k výhře.</div></div>
+        <div class="card" data-s="coin flip hod mincí spousta efektů a stavů se rozhoduje mincí. panna nebo orel. spánek, popálení, zmatek, některé útoky."><div class="top"><span class="term" lang="en">Coin flip</span><span class="cz">Hod mincí</span></div><div class="def">Řada efektů a stavů se rozhoduje mincí, panna nebo orel.</div><div class="ex">Spánek, popálení i některé útoky.</div></div>
+        <div class="card" data-s="prize swap výměna prize při knock outu bereš prize karty. dvouprize pokémoni mění matematiku závodu. tři ex ko = celá hra."><div class="top"><span class="term" lang="en">Prize trade</span><span class="cz">Výměna prize</span></div><div class="def">Kolik prize dáš za kolik dostaneš. Jádro celého závodu o výhru.</div><div class="ex">Tři KO na Pokémony ex ukončí hru.</div></div>
+      </div></div>
+
+      <div class="gsec" data-cat="slang"><div class="gsec-head"><h3>Slang u stolu</h3><span class="count" aria-label="6 pojmů">6</span></div><div class="grid">
+        <div class="card" data-s="donk donk vyřazení soupeřova jediného pokémona hned v prvním kole. rychlá výhra proti pomalému startu."><div class="top"><span class="term" lang="en">Donk</span><span class="cz">Donk</span></div><div class="def">Vyřazení soupeřova jediného Pokémona hned v prvním kole.</div><div class="ex">Trestá pomalý start s jedním Basic.</div></div>
+        <div class="card" data-s="gust gust efekt přitáhneš si soupeřova lavičkového dopředu a vyřadíš ho. obcházíš zeď vepředu. cross switcher, boss's orders."><div class="top"><span class="term" lang="en">Gust</span><span class="cz">Přitažení dopředu</span></div><div class="def">Vytáhneš si soupeřova lavičkového do aktivní pozice a vyřadíš ho.</div><div class="ex">Obejdeš zeď, kterou drží vepředu.</div></div>
+        <div class="card" data-s="bricked cihla ruka bez akce nebo bez basic pokémona. nemůžeš rozjet hru. mrtvá otvírací ruka."><div class="top"><span class="term" lang="en">Bricked</span><span class="cz">Mrtvá ruka</span></div><div class="def">Ruka bez akce nebo bez Basic — hru s ní nerozjedeš.</div><div class="ex">Důvod, proč do balíčku patří hodně draw.</div></div>
+        <div class="card" data-s="tank tank pokémon s vysokým hp, který dlouho vydrží vepředu. těžko se vyřazuje. metal tanky."><div class="top"><span class="term" lang="en">Tank</span><span class="cz">Tank</span></div><div class="def">Pokémon s vysokým HP, který dlouho vydrží vepředu.</div><div class="ex">Kovoví Pokémoni bývají tanky.</div></div>
+        <div class="card" data-s="snipe odstřel útok, který zasáhne soupeřova lavičkového, ne jen aktivního. obchází zeď a dobíjí prize."><div class="top"><span class="term" lang="en">Snipe</span><span class="cz">Odstřel</span></div><div class="def">Útok, který zasáhne i lavičkového Pokémona, ne jen aktivního.</div><div class="ex">Dobíjí zraněné cíle v záloze.</div></div>
+        <div class="card" data-s="one-prizer jednoprize balíček balíček stavěný na pokémonech, co dávají jen jednu prize. odolný proti prize závodu s ex."><div class="top"><span class="term" lang="en">One-prizer</span><span class="cz">Jednoprize</span></div><div class="def">Balíček na Pokémonech, kteří dávají soupeři jen jednu prize.</div><div class="ex">Nemá slabinu prize výměny s ex.</div></div>
+      </div></div>
+
+    </div>
+    <div class="empty" id="empty" role="status" aria-live="polite">Nic takového v taháku není. Zkus jiné slovo.</div>
+  </section>
+
+  <footer>
+    Untap ✦ společník k <a href="https://foilio.cards">Foiliu</a>. Uzavřený slovník, jakmile ho znáš, přečteš skoro každou kartu.<br>
+    <a href="index.html">← Zpět na výběr her</a> · Detailní znění pravidel má oficiální Pokémon TCG Rulebook.
+  </footer>
+</div>
+
+<nav class="tabbar" aria-label="Rychlá navigace">
+  <a class="tab" href="#tah" data-t="tah"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v4h-4"/></svg><span>Tah</span></a>
+  <a class="tab" href="#karta" data-t="karta"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2.5"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><span>Karta</span></a>
+  <a class="tab" href="#typy" data-t="typy"><svg viewBox="0 0 24 24"><path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11Z"/></svg><span>Typy</span></a>
+  <a class="tab" href="#utok" data-t="utok"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z"/></svg><span>Útok</span></a>
+  <a class="tab" href="#slovnik" data-t="slovnik"><svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5Z"/><path d="M4 20.5A2.5 2.5 0 0 1 6.5 18H20"/></svg><span>Slovník</span></a>
+</nav>
+
+<script>
+const content=document.getElementById('content');
+const chipsEl=document.getElementById('chips');
+const emptyEl=document.getElementById('empty');
+const qEl=document.getElementById('q');
+let activeCat='all';
+
+const secs=[...content.querySelectorAll('.gsec')].map(el=>({
+  el, cat:el.dataset.cat, countEl:el.querySelector('.count'),
+  cards:[...el.querySelectorAll('.card')].map(c=>({el:c,hay:c.dataset.s}))
+}));
+
+function render(){
+  const q=qEl.value.trim().toLowerCase();
+  let any=false;
+  for(const s of secs){
+    const inCat=activeCat==='all'||activeCat===s.cat;
+    let n=0;
+    for(const c of s.cards){
+      const hit=!q||c.hay.includes(q);
+      c.el.hidden=!hit;
+      if(hit)n++;
+    }
+    const show=inCat&&n>0;
+    s.el.hidden=!show;
+    if(show){
+      any=true;
+      s.countEl.textContent=n;
+      s.countEl.setAttribute('aria-label',n+' pojmů');
+    }
+  }
+  emptyEl.classList.toggle('show',!any);
+}
+
+chipsEl.addEventListener('click',e=>{
+  const b=e.target.closest('.chip');
+  if(!b)return;
+  activeCat=b.dataset.cat;
+  chipsEl.querySelectorAll('.chip').forEach(c=>{
+    const on=c===b;
+    c.classList.toggle('active',on);
+    c.setAttribute('aria-pressed',on);
+  });
+  render();
+});
+qEl.addEventListener('input',render);
+
+const tabs=[...document.querySelectorAll('.tab')];
+const ids=['tah','karta','typy','utok','slovnik'];
+const crossing=new Set();
+let current=ids[0];
+const io=new IntersectionObserver(es=>{
+  for(const e of es) e.isIntersecting?crossing.add(e.target.id):crossing.delete(e.target.id);
+  for(let i=ids.length-1;i>=0;i--) if(crossing.has(ids[i])){current=ids[i];break;}
+  for(const t of tabs){
+    const on=t.dataset.t===current;
+    t.classList.toggle('active',on);
+    on?t.setAttribute('aria-current','true'):t.removeAttribute('aria-current');
+  }
+},{threshold:0,rootMargin:'-88px 0px -78% 0px'});
+for(const id of ids){
+  const el=document.getElementById(id);
+  if(el)io.observe(el);
+}
+</script>
+</body>
+</html>
